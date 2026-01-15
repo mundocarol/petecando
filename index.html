@@ -1,1 +1,4096 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petecando 2026</title>
+    <meta name="theme-color" content="#2575fc">
+    <meta name="description" content="Sistema de gerenciamento para torneios de peteca">
+    <link rel="manifest" href="manifest.json">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 10px;
+            font-size: 14px;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .app-by {
+            font-size: 0.8rem;
+            font-style: italic;
+            margin-top: 5px;
+        }
+        
+        .panels {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .panel {
+            flex: 1;
+            min-width: 100%;
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .panel h2 {
+            color: #2575fc;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #f0f2f5;
+            font-size: 1.1rem;
+        }
+        
+        .input-group {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        
+        input[type="text"], input[type="password"], select {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+        
+        button {
+            padding: 8px 12px;
+            background: #2575fc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.3s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+        
+        button:hover {
+            background: #1a65e0;
+        }
+        
+        .btn-add {
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .btn-start {
+            background: #2ed573;
+            width: 100%;
+            margin-top: 8px;
+        }
+        
+        .btn-start:hover {
+            background: #25c768;
+        }
+        
+        .btn-start:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .player-list {
+            list-style: none;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 8px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            padding: 6px;
+        }
+        
+        .player-list li {
+            padding: 6px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        
+        .player-list li:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .player-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .player-list button {
+            padding: 4px 6px;
+            background: #ff4757;
+            font-size: 0.75rem;
+        }
+        
+        .player-list button:hover {
+            background: #ff3745;
+        }
+        
+        .teams-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        @media (min-width: 768px) {
+            .teams-container {
+                flex-direction: row;
+            }
+            
+            .panel {
+                min-width: 300px;
+            }
+        }
+        
+        .team {
+            flex: 1;
+            padding: 10px;
+            border-radius: 6px;
+            background: #f8f9fa;
+            text-align: center;
+            position: relative;
+        }
+        
+        .team h3 {
+            margin-bottom: 10px;
+            color: #2575fc;
+            font-size: 1rem;
+        }
+        
+        .team-score {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            background: #2575fc;
+            color: white;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1rem;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.2);
+        }
+        
+        .team-members {
+            min-height: 90px;
+            padding: 6px;
+            background: white;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .team-player {
+            padding: 6px;
+            background: #f0f2f5;
+            border-radius: 3px;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .team-player.winner {
+            background: #d4edda;
+            border-left: 3px solid #28a745;
+        }
+        
+        .player-points-buttons {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .btn-point-small {
+            padding: 4px 6px;
+            font-size: 0.75rem;
+            background: #2ed573;
+            min-width: 50px;
+        }
+        
+        .consecutive-wins {
+            font-size: 0.75rem;
+            color: #ff6b6b;
+            margin-top: 4px;
+            font-weight: bold;
+        }
+        
+        .btn-victory {
+            width: 100%;
+            margin-top: 6px;
+            background: #2ed573;
+        }
+        
+        .btn-victory:hover {
+            background: #25c768;
+        }
+        
+        .waiting-list {
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 6px;
+            margin-top: 12px;
+            min-height: 90px;
+        }
+        
+        .waiting-list h3 {
+            color: #2575fc;
+            margin-bottom: 6px;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.85rem;
+        }
+        
+        .stats-table th, .stats-table td {
+            padding: 8px 5px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .stats-table th {
+            background-color: #2575fc;
+            color: white;
+        }
+        
+        .stats-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .player-removed {
+            color: #ff4757;
+            font-style: italic;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 10px;
+        }
+        
+        @media (min-width: 480px) {
+            .action-buttons {
+                flex-direction: row;
+            }
+        }
+        
+        .btn-reset {
+            background: #ff4757;
+        }
+        
+        .btn-reset:hover {
+            background: #ff3745;
+        }
+        
+        .btn-share {
+            background: #25d366;
+            margin-top: 10px;
+            display: block;
+            width: 100%;
+        }
+        
+        .btn-share:hover {
+            background: #20bd5c;
+        }
+        
+        .instructions-toggle {
+            background: #fff4e6;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 12px;
+            border-left: 3px solid #ffa502;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .instructions-toggle h3 {
+            color: #ffa502;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        .instructions-content {
+            display: none;
+            background: #fff4e6;
+            padding: 0 12px 12px 12px;
+            border-radius: 0 0 6px 6px;
+            margin-top: -8px;
+            border-left: 3px solid #ffa502;
+        }
+        
+        .instructions-content ol {
+            margin-left: 18px;
+            padding-top: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .instructions-content li {
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+        }
+        
+        .consecutive-info {
+            background: #ffeaa7;
+            padding: 8px;
+            border-radius: 4px;
+            margin: 8px 0;
+            text-align: center;
+            display: none;
+            font-size: 0.85rem;
+        }
+        
+        .password-dialog {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            width: 280px;
+            max-width: 85%;
+        }
+        
+        .password-dialog h3 {
+            margin-bottom: 12px;
+            color: #2575fc;
+            font-size: 1rem;
+        }
+        
+        .password-dialog button {
+            margin-top: 8px;
+            width: 100%;
+        }
+        
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        
+        .toggle-icon {
+            transition: transform 0.3s;
+        }
+        
+        .toggle-icon.rotated {
+            transform: rotate(180deg);
+        }
+        
+        .tournament-status {
+            background: #e3f2fd;
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .status-playing {
+            color: #2e7d32;
+        }
+        
+        .status-waiting {
+            color: #ed6c02;
+        }
+        
+        .match-panel {
+            background: #e9ecef !important;
+            border-left: 3px solid #2575fc;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-table th:nth-child(5),
+            .stats-table td:nth-child(5) {
+                display: none;
+            }
+            
+            .stats-table th, .stats-table td {
+                padding: 6px 4px;
+                font-size: 0.8rem;
+            }
+        }
+        
+        .match-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .btn-back {
+            background: #ffa502;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+        }
+        
+        .btn-back:hover {
+            background: #e59400;
+        }
+        
+        .btn-forward {
+            background: #2ed573;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+        }
+        
+        .btn-forward:hover {
+            background: #25c768;
+        }
+        
+        .waiting-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .swap-panel {
+            margin-top: 12px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px dashed #2575fc;
+        }
+        
+        .swap-panel h3 {
+            color: #2575fc;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .swap-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        @media (min-width: 480px) {
+            .swap-controls {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+        
+        .swap-select {
+            flex: 1;
+            font-size: 0.85rem;
+        }
+        
+        .swap-icon {
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 0 8px;
+        }
+        
+        .btn-swap {
+            background: #ffa502;
+        }
+        
+        .btn-swap:hover {
+            background: #e59400;
+        }
+        
+        .position-cell {
+            font-weight: bold;
+            width: 35px;
+            text-align: center;
+        }
+        
+        .first-place {
+            background-color: #FFD700 !important;
+            color: #000;
+            font-weight: bold;
+        }
+        
+        .second-place {
+            background-color: #C0C0C0 !important;
+            color: #000;
+            font-weight: bold;
+        }
+        
+        .third-place {
+            background-color: #CD7F32 !important;
+            color: #000;
+            font-weight: bold;
+        }
+        
+        .ranking-badge {
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 25px;
+            margin-right: 6px;
+            font-weight: bold;
+        }
+        
+        .first-badge {
+            background-color: #FFD700;
+            color: #000;
+        }
+        
+        .second-badge {
+            background-color: #C0C0C0;
+            color: #000;
+        }
+        
+        .third-badge {
+            background-color: #CD7F32;
+            color: #000;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #2575fc;
+            overflow-x: auto;
+            font-size: 0.85rem;
+        }
+        
+        .tab {
+            padding: 8px 15px;
+            background: #e9ecef;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+            white-space: nowrap;
+        }
+        
+        .tab.active {
+            background: #2575fc;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
 
+        #installButton {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #25d366;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            cursor: pointer;
+        }
+
+        #installButton:hover {
+            background: #20bd5c;
+        }
+        
+        .games-tab header {
+            display: none;
+        }
+        
+        .stats-row {
+            display: flex;
+            align-items: center;
+            padding: 6px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .stats-position {
+            font-weight: bold;
+            width: 35px;
+            text-align: center;
+            margin-right: 8px;
+            font-size: 0.85rem;
+        }
+        
+        .stats-player {
+            flex: 1;
+            font-size: 0.85rem;
+        }
+        
+        .stats-numbers {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .stats-wins {
+            color: #2e7d32;
+            font-weight: bold;
+            min-width: 35px;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+        
+        .stats-losses {
+            color: #d32f2f;
+            font-weight: bold;
+            min-width: 35px;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+        
+        .stats-percent {
+            color: #2575fc;
+            font-weight: bold;
+            min-width: 45px;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+        
+        .stats-emoji {
+            margin-left: 8px;
+            font-size: 1rem;
+        }
+        
+        .victory-dialog {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            width: 280px;
+            max-width: 85%;
+            text-align: center;
+        }
+        
+        .victory-dialog h3 {
+            color: #2575fc;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+        
+        .victory-dialog p {
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+        
+        .victory-dialog-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        
+        .victory-dialog-buttons button {
+            flex: 1;
+        }
+        
+        .btn-confirm {
+            background: #2ed573;
+        }
+        
+        .btn-confirm:hover {
+            background: #25c768;
+        }
+        
+        .btn-cancel {
+            background: #ff4757;
+        }
+        
+        .btn-cancel:hover {
+            background: #ff3745;
+        }
+        
+        .team-stats-panel {
+            margin-top: 15px;
+        }
+        
+        .btn-export {
+            background: #9c27b0;
+            margin-top: 10px;
+            display: block;
+            width: 100%;
+        }
+        
+        .btn-export:hover {
+            background: #7b1fa2;
+        }
+        
+        .btn-sorteio {
+            background: #9c27b0;
+            margin-top: 6px;
+            width: 100%;
+            font-size: 0.8rem;
+        }
+        
+        .btn-sorteio:hover {
+            background: #7b1fa2;
+        }
+        
+        .consecutive-individual {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: #ff6b6b;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .player-coringa {
+            background-color: #ffeb3b !important;
+            border: 1px solid #ffc107;
+        }
+        
+        .points-stats-panel {
+            margin-top: 15px;
+        }
+        
+        .points-stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+            font-size: 0.85rem;
+        }
+        
+        .points-stats-table th, .points-stats-table td {
+            padding: 8px 5px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .points-stats-table th {
+            background-color: #9c27b0;
+            color: white;
+        }
+        
+        .points-stats-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .player-name {
+            flex: 1;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+        
+        .confrontos-container {
+            margin-top: 12px;
+        }
+        
+        .confronto-item {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .confronto-teams {
+            flex: 1;
+            font-size: 0.85rem;
+        }
+        
+        .confronto-result {
+            font-weight: bold;
+            color: #2575fc;
+            font-size: 0.85rem;
+        }
+        
+        .coringa-substitute {
+            font-size: 0.75rem;
+            color: #9c27b0;
+            font-style: italic;
+            margin-left: 4px;
+        }
+        
+        .simple-dialog {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            width: 280px;
+            max-width: 85%;
+            text-align: center;
+        }
+        
+        .simple-dialog h3 {
+            color: #2575fc;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+        
+        .simple-dialog p {
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+        
+        .simple-dialog-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        
+        .simple-dialog-buttons button {
+            flex: 1;
+        }
+        
+        .purchases-panel {
+            margin-top: 15px;
+        }
+        
+        .purchase-form {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 15px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .purchase-inputs {
+            display: flex;
+            gap: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .purchase-inputs {
+                flex-direction: column;
+            }
+        }
+        
+        .purchase-item {
+            flex: 2;
+        }
+        
+        .purchase-price {
+            flex: 1;
+        }
+        
+        .purchases-list {
+            margin-top: 12px;
+        }
+        
+        .purchase-item-card {
+            background: white;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+            border-left: 3px solid #9c27b0;
+        }
+        
+        .purchase-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .purchase-title {
+            font-weight: bold;
+            font-size: 0.95rem;
+            color: #333;
+        }
+        
+        .purchase-price-tag {
+            background: #9c27b0;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        
+        .purchase-players {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        
+        .player-purchase-btn {
+            background: #e9ecef;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            padding: 4px 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.8rem;
+        }
+        
+        .player-purchase-btn:hover {
+            background: #dee2e6;
+        }
+        
+        .player-purchase-btn.selected {
+            background: #9c27b0;
+            color: white;
+            border-color: #9c27b0;
+        }
+        
+        .purchase-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .btn-remove-purchase {
+            background: #ff4757;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+        }
+        
+        .purchases-summary {
+            margin-top: 15px;
+            padding: 12px;
+            background: #e9ecef;
+            border-radius: 6px;
+        }
+        
+        .player-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #ddd;
+            font-size: 0.85rem;
+        }
+        
+        .player-total:last-child {
+            border-bottom: none;
+        }
+        
+        .total-amount {
+            font-weight: bold;
+            color: #9c27b0;
+        }
+        
+        .grand-total {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #9c27b0;
+            font-weight: bold;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .pix-info {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f0f8f0;
+            border-radius: 6px;
+            border-left: 3px solid #25d366;
+            text-align: center;
+        }
+        
+        .pix-email {
+            font-weight: bold;
+            font-size: 0.95rem;
+            color: #25d366;
+            margin: 8px 0;
+        }
+        
+        .confraternizacao-text {
+            font-style: italic;
+            color: #666;
+            margin-top: 8px;
+            font-size: 0.8rem;
+        }
+        
+        .purchase-items-list {
+            margin-top: 8px;
+        }
+        
+        .purchase-item-row {
+            transition: background-color 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .purchase-item-row:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .player-purchase-section {
+            border-left: 3px solid #9c27b0;
+            margin-bottom: 12px;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+        }
+        
+        .purchase-item-actions button {
+            font-size: 0.65rem;
+            padding: 2px 4px;
+        }
+        
+        .btn-remove-purchase-small {
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .btn-remove-purchase-small:hover {
+            background: #ff3745;
+        }
+        
+        .team-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .team-label {
+            font-weight: bold;
+            color: #2575fc;
+            font-size: 0.95rem;
+        }
+        
+        .score-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-error-adversario {
+            background: #ffa502;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 10px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: background 0.3s;
+            white-space: nowrap;
+        }
+        
+        .btn-error-adversario:hover {
+            background: #e59400;
+        }
+        
+        @media (max-width: 480px) {
+            .team-header {
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start;
+            }
+            
+            .score-container {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .btn-error-adversario {
+                font-size: 0.65rem;
+                padding: 5px 6px;
+            }
+        }
+        
+        /* Estilo para jogador - número de jogos e vitórias consecutivas */
+        .player-name-with-games {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+        }
+        
+        .player-game-count {
+            color: #666;
+            font-weight: normal;
+            font-size: 0.85rem;
+        }
+        
+        /* Estilo para nome do jogador com número de jogos inline */
+        .player-name-inline {
+            display: inline;
+            font-size: 0.85rem;
+        }
+        
+        .player-games-inline {
+            display: inline;
+            color: #666;
+            font-weight: normal;
+            font-size: 0.85rem;
+        }
+        
+        .player-wins-inline {
+            display: inline;
+            color: #2e7d32;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+        
+        .player-games-separator {
+            margin: 0 4px;
+            color: #999;
+        }
+        
+        .player-wins-separator {
+            margin: 0 2px;
+            color: #999;
+        }
+        
+        /* Ajustes para dispositivos móveis muito pequenos */
+        @media (max-width: 360px) {
+            body {
+                padding: 5px;
+                font-size: 13px;
+            }
+            
+            .container {
+                padding: 5px;
+            }
+            
+            .panel {
+                padding: 8px;
+            }
+            
+            button {
+                padding: 6px 8px;
+                font-size: 0.8rem;
+            }
+            
+            input[type="text"], input[type="password"], select {
+                padding: 6px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header id="mainHeader">
+            <h1>Petecando 2026</h1>
+            <div class="app-by">App by Hugo Ribeiro</div>
+        </header>
+        
+        <div id="tournamentStatus" class="tournament-status status-waiting" style="display: none;">
+            Torneio não iniciado
+        </div>
+        
+        <!-- Sistema de Abas -->
+        <div class="tabs">
+            <div class="tab active" data-tab="edition">Edição</div>
+            <div class="tab" data-tab="games">Jogos</div>
+            <div class="tab" data-tab="results">Resultados</div>
+            <div class="tab" data-tab="purchases">Compras</div>
+        </div>
+        
+        <!-- Conteúdo da Aba 1 - Edição -->
+        <div id="edition-tab" class="tab-content active">
+            <div class="panels">
+                <div class="panel">
+                    <h2>Jogadores</h2>
+                    <div class="input-group">
+                        <input type="text" id="playerName" placeholder="Nome do jogador">
+                        <button class="btn-add" onclick="addPlayer()">Adicionar</button>
+                    </div>
+                    <button class="btn-add" onclick="addCoringa()" style="margin-bottom: 8px; background: #9c27b0;">Adicionar CORINGA</button>
+                    <ul id="playersList" class="player-list"></ul>
+                    
+                    <button id="startTournamentBtn" class="btn-start" onclick="startTournament()" disabled>Iniciar Torneio</button>
+                    
+                    <div class="swap-panel">
+                        <h3>Trocar Jogadores</h3>
+                        <div class="swap-controls">
+                            <select id="swapPlayer1" class="swap-select">
+                                <option value="">Selecione o primeiro jogador</option>
+                            </select>
+                            <div class="swap-icon">⇄</div>
+                            <select id="swapPlayer2" class="swap-select">
+                                <option value="">Selecione o segundo jogador</option>
+                            </select>
+                            <button class="btn-swap" onclick="showSimpleDialog('swap')">Trocar</button>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn-reset" onclick="showPasswordDialog('reset')">Reiniciar Torneio</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Conteúdo da Aba 2 - Jogos -->
+        <div id="games-tab" class="tab-content">
+            <div class="panels">
+                <div class="panel match-panel">
+                    <div class="match-title">
+                        <h2 id="currentMatchTitle">Partida - 0</h2>
+                        <div class="navigation-buttons">
+                            <button id="backButton" class="btn-back" onclick="showSimpleDialog('back')" style="display: none;">Voltar</button>
+                            <button id="forwardButton" class="btn-forward" onclick="showPasswordDialog('forward')" style="display: none;">Avançar</button>
+                        </div>
+                    </div>
+                    <div id="consecutiveInfo" class="consecutive-info">
+                        Dupla com 3 vitórias consecutivas! Os jogadores serão redistribuídos.
+                    </div>
+                    
+                    <div class="teams-container">
+                        <div class="team">
+                            <div class="team-header">
+                                <div class="team-label">Dupla 1</div>
+                                <div class="score-container">
+                                    <button class="btn-error-adversario" onclick="addErrorAdversario(1)">+ Erro do Adversário</button>
+                                    <div class="team-score" id="team1Score">0</div>
+                                </div>
+                            </div>
+                            <div id="team1" class="team-members">
+                                <p>A definir</p>
+                            </div>
+                            <div id="team1Wins" class="consecutive-wins"></div>
+                            <button class="btn-victory" onclick="confirmVictory(1)">Dupla 1 Venceu</button>
+                            <button id="sorteioTeam1" class="btn-sorteio" onclick="realizarSorteio(1)" style="display: none;">Sorteio CORINGA</button>
+                        </div>
+                        
+                        <div class="team">
+                            <div class="team-header">
+                                <div class="team-label">Dupla 2</div>
+                                <div class="score-container">
+                                    <button class="btn-error-adversario" onclick="addErrorAdversario(2)">+ Erro do Adversário</button>
+                                    <div class="team-score" id="team2Score">0</div>
+                                </div>
+                            </div>
+                            <div id="team2" class="team-members">
+                                <p>A definir</p>
+                            </div>
+                            <div id="team2Wins" class="consecutive-wins"></div>
+                            <button class="btn-victory" onclick="confirmVictory(2)">Dupla 2 Venceu</button>
+                            <button id="sorteioTeam2" class="btn-sorteio" onclick="realizarSorteio(2)" style="display: none;">Sorteio CORINGA</button>
+                        </div>
+                    </div>
+                    
+                    <div class="waiting-list">
+                        <div class="waiting-header">
+                            <h3>Próximos da Fila</h3>
+                        </div>
+                        <div id="waitingPlayers">Nenhum jogador na espera</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Conteúdo da Aba 3 - Resultados -->
+        <div id="results-tab" class="tab-content">
+            <div class="panel">
+                <h2>Relatório de Gastos</h2>
+                <div id="purchasesSummaryResults">
+                    <!-- O relatório de gastos será inserido aqui via JavaScript -->
+                </div>
+                <button class="btn-share" onclick="sharePurchasesResults()">Compartilhar Relatório de Gastos</button>
+            </div>
+            
+            <div class="panel">
+                <h2>Estatísticas Individuais</h2>
+                <div id="modernStats">
+                    <!-- As estatísticas modernas serão inseridas aqui via JavaScript -->
+                </div>
+                <button class="btn-share" onclick="shareResults()">Compartilhar Resultados</button>
+            </div>
+            
+            <div class="panel points-stats-panel">
+                <h2>Estatísticas de Pontos</h2>
+                <div id="pointsStats">
+                    <!-- As estatísticas de pontos serão inseridas aqui via JavaScript -->
+                </div>
+                <button class="btn-share" onclick="sharePointsResults()">Compartilhar Estatísticas de Pontos</button>
+            </div>
+            
+            <div class="panel team-stats-panel">
+                <h2>Relatório de Confrontos</h2>
+                <div id="confrontosStats">
+                    <!-- O relatório de confrontos será inserido aqui via JavaScript -->
+                </div>
+                <button class="btn-share" onclick="shareConfrontosResults()">Compartilhar Relatório de Confrontos</button>
+            </div>
+            
+            <div class="panel">
+                <h2>Exportar Dados</h2>
+                <p>Exporte os dados completos do torneio para análise posterior:</p>
+                <button class="btn-export" onclick="exportTournamentData()">Exportar Dados do Torneio</button>
+            </div>
+            
+            <div class="instructions-toggle" onclick="toggleInstructions()">
+                <h3>Medidas Oficiais e Como usar o sistema</h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="instructions-content" id="instructionsContent">
+                <ol>
+                    <li>Tamanho oficial quadra peteca 7,5 x 15 metros</li>
+                    <li>Altura oficial rede - masc 2,43 - fem 2,24 - mirim 2,00</li>
+                    <li>---------------------------------------------------</li>
+                    <li>Adicione os nomes de todos os jogadores (mínimo 4)</li>
+                    <li>Clique em "Iniciar Torneio" para começar a partida</li>
+                    <li>Clique em "Dupla X Venceu" para registrar o resultado</li>
+                    <li>Se uma dupla vencer 3 vezes seguidas, os jogadores serão redistribuídos</li>
+                    <li>Você pode adicionar ou remover jogadores mesmo durante o torneio</li>
+                    <li>Agora você pode trocar jogadores de posição usando o sistema de troca</li>
+                    <li>Acompanhe as estatísticas na tabela e compartilhe os resultados</li>
+                    <li>Adicione o CORINGA para sortear jogadores da fila de espera</li>
+                    <li>Jogadores com 4 vitórias consecutivas serão substituídos automaticamente</li>
+                    <li>Use o botão "Acertou X" para marcar pontos durante a partida</li>
+                    <li>Use o botão "+ Erro do Adversário" para marcar pontos quando a outra dupla erra</li>
+                    <li>Na aba "Compras" registre itens vendidos aos jogadores</li>
+                </ol>
+            </div>
+        </div>
+        
+        <!-- Conteúdo da Aba 4 - Compras -->
+        <div id="purchases-tab" class="tab-content">
+            <div class="panel">
+                <h2>Registrar Compra</h2>
+                <div class="purchase-form">
+                    <div class="purchase-inputs">
+                        <input type="text" id="purchaseItem" class="purchase-item" placeholder="Nome do item (ex: Água, Cerveja, Suco)">
+                        <input type="number" id="purchasePrice" class="purchase-price" placeholder="Preço (R$)" min="0" step="0.01">
+                    </div>
+                    <div class="purchase-players" id="purchasePlayersButtons">
+                        <!-- Botões dos jogadores serão inseridos aqui -->
+                    </div>
+                </div>
+                
+                <div class="purchases-list" id="purchasesList">
+                    <!-- Itens de compra serão adicionados aqui -->
+                </div>
+            </div>
+            
+            <div class="panel purchases-summary">
+                <h2>Resumo de Gastos</h2>
+                <div id="purchasesSummary">
+                    <!-- Resumo de gastos será adicionado aqui -->
+                </div>
+                
+                <div class="pix-info">
+                    <h3>Pagamento via PIX</h3>
+                    <p>Envie o valor total para:</p>
+                    <div class="pix-email">peteca.pix@gmail.com</div>
+                    <p class="confraternizacao-text">Verba arrecadada para confraternizações</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button id="installButton" title="Instalar App">+</button>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="password-dialog" id="passwordDialog">
+        <h3 id="dialogTitle">Reiniciar Torneio</h3>
+        <p id="dialogMessage">Digite a senha para reiniciar:</p>
+        <input type="password" id="passwordInput" placeholder="Senha">
+        <button onclick="checkPassword()">Confirmar</button>
+        <button onclick="hidePasswordDialog()" style="background: #ff4757;">Cancelar</button>
+    </div>
+
+    <div class="password-dialog" id="removePlayerDialog">
+        <h3>Remover Jogador</h3>
+        <p>Digite a senha para remover <span id="playerToRemove"></span>:</p>
+        <input type="password" id="removePasswordInput" placeholder="Senha">
+        <button onclick="checkRemovePassword()">Confirmar</button>
+        <button onclick="hideRemovePlayerDialog()" style="background: #ff4757;">Cancelar</button>
+    </div>
+    
+    <div class="victory-dialog" id="victoryDialog">
+        <h3 id="victoryDialogTitle">Confirmar Vitória</h3>
+        <p id="victoryDialogMessage">A Dupla 1 venceu a partida?</p>
+        <div class="victory-dialog-buttons">
+            <button class="btn-cancel" onclick="hideVictoryDialog()">Cancelar</button>
+            <button class="btn-confirm" onclick="confirmVictoryAction()">Confirmar</button>
+        </div>
+    </div>
+    
+    <div class="simple-dialog" id="simpleDialog">
+        <h3 id="simpleDialogTitle">Confirmar Troca</h3>
+        <p id="simpleDialogMessage">Tem certeza que deseja trocar os jogadores?</p>
+        <div class="simple-dialog-buttons">
+            <button class="btn-cancel" onclick="hideSimpleDialog()">Cancelar</button>
+            <button class="btn-confirm" onclick="confirmSimpleAction()">Confirmar</button>
+        </div>
+    </div>
+
+    <script>
+        // Dados do torneio
+        let players = [];
+        let currentPlayers = [];
+        let waitingPlayers = [];
+        let stats = {};
+        let teamStats = {};
+        let team1 = [];
+        let team2 = [];
+        let teamConsecutiveWins = { team1: 0, team2: 0 };
+        let exitOrder = [];
+        let currentMatch = 0;
+        let tournamentStarted = false;
+        let removedPlayers = [];
+        let tournamentTimer = null;
+        let tournamentTimeElapsed = 0;
+        let matchHistory = [];
+        let currentAction = '';
+        let playerToRemove = '';
+        let currentTab = 'edition';
+        let deferredPrompt;
+        let wakeLock = null;
+        let pendingVictoryTeam = 0;
+        
+        // Novas variáveis para funcionalidades do CORINGA
+        let coringaUsedInSorteio = [];
+        let consecutiveWins = {};
+        
+        // Novas variáveis para sistema de pontos
+        let playerPoints = {};
+        let playerErrors = {};
+        let pointsHistory = [];
+        let currentMatchPoints = {};
+        let currentMatchErrors = {};
+        let teamScores = { team1: 0, team2: 0 };
+        let undoneActions = [];
+        
+        // Nova variável para histórico de confrontos
+        let confrontosHistory = [];
+        
+        // Nova variável para sistema de compras
+        let purchases = [];
+        let currentPurchaseId = null;
+        let currentPurchasePlayer = null;
+        let pendingSwapPlayers = { player1: '', player2: '' };
+
+        // Elementos do DOM
+        const playerNameInput = document.getElementById('playerName');
+        const playersList = document.getElementById('playersList');
+        const team1Element = document.getElementById('team1');
+        const team2Element = document.getElementById('team2');
+        const team1ScoreElement = document.getElementById('team1Score');
+        const team2ScoreElement = document.getElementById('team2Score');
+        const team1WinsElement = document.getElementById('team1Wins');
+        const team2WinsElement = document.getElementById('team2Wins');
+        const waitingPlayersElement = document.getElementById('waitingPlayers');
+        const modernStatsElement = document.getElementById('modernStats');
+        const teamStatsElement = document.getElementById('confrontosStats');
+        const pointsStatsElement = document.getElementById('pointsStats');
+        const consecutiveInfo = document.getElementById('consecutiveInfo');
+        const passwordDialog = document.getElementById('passwordDialog');
+        const removePlayerDialog = document.getElementById('removePlayerDialog');
+        const victoryDialog = document.getElementById('victoryDialog');
+        const simpleDialog = document.getElementById('simpleDialog');
+        const overlay = document.getElementById('overlay');
+        const passwordInput = document.getElementById('passwordInput');
+        const removePasswordInput = document.getElementById('removePasswordInput');
+        const startTournamentBtn = document.getElementById('startTournamentBtn');
+        const instructionsContent = document.getElementById('instructionsContent');
+        const toggleIcon = document.querySelector('.toggle-icon');
+        const tournamentStatus = document.getElementById('tournamentStatus');
+        const currentMatchTitle = document.getElementById('currentMatchTitle');
+        const backButton = document.getElementById('backButton');
+        const forwardButton = document.getElementById('forwardButton');
+        const dialogTitle = document.getElementById('dialogTitle');
+        const dialogMessage = document.getElementById('dialogMessage');
+        const playerToRemoveSpan = document.getElementById('playerToRemove');
+        const victoryDialogTitle = document.getElementById('victoryDialogTitle');
+        const victoryDialogMessage = document.getElementById('victoryDialogMessage');
+        const simpleDialogTitle = document.getElementById('simpleDialogTitle');
+        const simpleDialogMessage = document.getElementById('simpleDialogMessage');
+        const swapPlayer1Select = document.getElementById('swapPlayer1');
+        const swapPlayer2Select = document.getElementById('swapPlayer2');
+        const installButton = document.getElementById('installButton');
+        const mainHeader = document.getElementById('mainHeader');
+        const sorteioTeam1Button = document.getElementById('sorteioTeam1');
+        const sorteioTeam2Button = document.getElementById('sorteioTeam2');
+        const purchasesList = document.getElementById('purchasesList');
+        const purchasesSummary = document.getElementById('purchasesSummary');
+        const purchasesSummaryResults = document.getElementById('purchasesSummaryResults');
+        const purchaseItemInput = document.getElementById('purchaseItem');
+        const purchasePriceInput = document.getElementById('purchasePrice');
+        const purchasePlayersButtons = document.getElementById('purchasePlayersButtons');
+        
+        // Sistema de abas
+        function initTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+            
+            // Restaurar aba ativa do localStorage
+            const savedTab = localStorage.getItem('currentTab');
+            if (savedTab) {
+                switchTab(savedTab);
+            }
+        }
+        
+        // Função para trocar de aba
+        function switchTab(tabId) {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            currentTab = tabId;
+            localStorage.setItem('currentTab', currentTab);
+            
+            // Remover classe ativa de todas as abas
+            tabs.forEach(t => t.classList.remove('active'));
+            tabContents.forEach(tc => tc.classList.remove('active'));
+            
+            // Adicionar classe ativa à aba clicada
+            const activeTab = document.querySelector(`.tab[data-tab="${tabId}"]`);
+            const activeContent = document.getElementById(`${tabId}-tab`);
+            
+            if (activeTab) activeTab.classList.add('active');
+            if (activeContent) activeContent.classList.add('active');
+            
+            // Mostrar ou esconder o cabeçalho principal
+            if (tabId === 'games') {
+                mainHeader.style.display = 'none';
+                tournamentStatus.style.display = 'none';
+            } else {
+                mainHeader.style.display = 'block';
+                if (tournamentStarted) {
+                    tournamentStatus.style.display = 'block';
+                }
+            }
+            
+            // Atualizar resumo de compras se for a aba de resultados
+            if (tabId === 'results') {
+                updatePurchasesSummaryResults();
+            }
+            
+            // Atualizar botões de jogadores na aba de compras
+            if (tabId === 'purchases') {
+                updatePurchasePlayersButtons();
+            }
+        }
+        
+        // Restaurar aba ativa
+        function restoreActiveTab() {
+            const savedTab = localStorage.getItem('currentTab');
+            if (savedTab) {
+                switchTab(savedTab);
+            }
+        }
+        
+        // Atualizar botões de jogadores na aba de compras
+        function updatePurchasePlayersButtons() {
+            purchasePlayersButtons.innerHTML = '';
+            
+            players.forEach(player => {
+                if (!player.includes("CORINGA")) {
+                    const playerBtn = document.createElement('button');
+                    playerBtn.className = 'player-purchase-btn';
+                    playerBtn.textContent = player;
+                    playerBtn.onclick = () => {
+                        if (purchaseItemInput.value.trim() && purchasePriceInput.value) {
+                            addPurchaseForPlayer(player);
+                        } else {
+                            alert('Preencha o nome do item e o preço primeiro.');
+                        }
+                    };
+                    purchasePlayersButtons.appendChild(playerBtn);
+                }
+            });
+        }
+        
+        // Carregar dados do localStorage se existirem
+        function loadFromLocalStorage() {
+            try {
+                const savedData = localStorage.getItem('petecaTournament');
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    players = data.players || [];
+                    currentPlayers = data.currentPlayers || [];
+                    waitingPlayers = data.waitingPlayers || [];
+                    stats = data.stats || {};
+                    teamStats = data.teamStats || {};
+                    team1 = data.team1 || [];
+                    team2 = data.team2 || [];
+                    teamConsecutiveWins = data.teamConsecutiveWins || { team1: 0, team2: 0 };
+                    exitOrder = data.exitOrder || [];
+                    currentMatch = data.currentMatch || 0;
+                    tournamentStarted = data.tournamentStarted || false;
+                    removedPlayers = data.removedPlayers || [];
+                    tournamentTimeElapsed = data.tournamentTimeElapsed || 0;
+                    matchHistory = data.matchHistory || [];
+                    consecutiveWins = data.consecutiveWins || {};
+                    coringaUsedInSorteio = data.coringaUsedInSorteio || [];
+                    playerPoints = data.playerPoints || {};
+                    playerErrors = data.playerErrors || {};
+                    pointsHistory = data.pointsHistory || [];
+                    currentMatchPoints = data.currentMatchPoints || {};
+                    currentMatchErrors = data.currentMatchErrors || {};
+                    teamScores = data.teamScores || { team1: 0, team2: 0 };
+                    undoneActions = data.undoneActions || [];
+                    confrontosHistory = data.confrontosHistory || [];
+                    purchases = data.purchases || [];
+                    
+                    updatePlayersList();
+                    updateStartButton();
+                    updateDisplay();
+                    updateModernStats();
+                    updateConfrontosStats();
+                    updatePointsStats();
+                    updateTournamentStatus();
+                    updateSwapDropdowns();
+                    updateNavigationButtons();
+                    updatePurchasesList();
+                    updatePurchasesSummary();
+                    updatePurchasesSummaryResults();
+                    updatePurchasePlayersButtons();
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dados do localStorage:', error);
+                // Se houver erro, inicie com dados vazios
+                resetToDefaultState();
+            }
+        }
+        
+        // Salvar dados no localStorage com múltiplas tentativas
+        function saveToLocalStorage() {
+            const data = {
+                players,
+                currentPlayers,
+                waitingPlayers,
+                stats,
+                teamStats,
+                team1,
+                team2,
+                teamConsecutiveWins,
+                exitOrder,
+                currentMatch,
+                tournamentStarted,
+                removedPlayers,
+                tournamentTimeElapsed,
+                matchHistory,
+                consecutiveWins,
+                coringaUsedInSorteio,
+                playerPoints,
+                playerErrors,
+                pointsHistory,
+                currentMatchPoints,
+                currentMatchErrors,
+                teamScores,
+                undoneActions,
+                confrontosHistory,
+                purchases
+            };
+            
+            try {
+                localStorage.setItem('petecaTournament', JSON.stringify(data));
+                
+                // Salvar também em sessionStorage como backup
+                sessionStorage.setItem('petecaTournamentBackup', JSON.stringify(data));
+                
+                // Salvar em cookies como backup adicional (para Google Sites)
+                document.cookie = `petecaTournament=${encodeURIComponent(JSON.stringify(data))}; max-age=${60*60*24*7}; path=/; samesite=strict`;
+                
+                console.log('Dados salvos com sucesso no localStorage');
+            } catch (error) {
+                console.error('Erro ao salvar no localStorage:', error);
+                
+                // Tentar salvar em sessionStorage como fallback
+                try {
+                    sessionStorage.setItem('petecaTournamentBackup', JSON.stringify(data));
+                    console.log('Dados salvos no sessionStorage como backup');
+                } catch (e) {
+                    console.error('Erro ao salvar no sessionStorage:', e);
+                }
+            }
+        }
+        
+        // Carregar dados de múltiplas fontes
+        function loadDataFromMultipleSources() {
+            try {
+                // Tentar carregar do localStorage primeiro
+                const savedData = localStorage.getItem('petecaTournament');
+                if (savedData) {
+                    return JSON.parse(savedData);
+                }
+                
+                // Tentar carregar do sessionStorage como backup
+                const backupData = sessionStorage.getItem('petecaTournamentBackup');
+                if (backupData) {
+                    return JSON.parse(backupData);
+                }
+                
+                // Tentar carregar de cookies (útil para Google Sites)
+                const cookies = document.cookie.split(';');
+                for (let cookie of cookies) {
+                    cookie = cookie.trim();
+                    if (cookie.startsWith('petecaTournament=')) {
+                        const cookieValue = decodeURIComponent(cookie.substring('petecaTournament='.length));
+                        return JSON.parse(cookieValue);
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dados de múltiplas fontes:', error);
+            }
+            
+            return null;
+        }
+        
+        // Resetar para estado padrão
+        function resetToDefaultState() {
+            players = [];
+            currentPlayers = [];
+            waitingPlayers = [];
+            stats = {};
+            teamStats = {};
+            team1 = [];
+            team2 = [];
+            teamConsecutiveWins = { team1: 0, team2: 0 };
+            exitOrder = [];
+            currentMatch = 0;
+            tournamentStarted = false;
+            removedPlayers = [];
+            tournamentTimeElapsed = 0;
+            matchHistory = [];
+            consecutiveWins = {};
+            coringaUsedInSorteio = [];
+            playerPoints = {};
+            playerErrors = {};
+            pointsHistory = [];
+            currentMatchPoints = {};
+            currentMatchErrors = {};
+            teamScores = { team1: 0, team2: 0 };
+            undoneActions = [];
+            confrontosHistory = [];
+            purchases = [];
+        }
+        
+        // Atualizar estado do botão de iniciar torneio
+        function updateStartButton() {
+            const regularPlayers = players.filter(p => !p.includes("CORINGA"));
+            if (regularPlayers.length >= 4 && !tournamentStarted) {
+                startTournamentBtn.disabled = false;
+            } else {
+                startTournamentBtn.disabled = true;
+            }
+        }
+        
+        // Contar quantos CORINGAs já existem
+        function countCoringas() {
+            return players.filter(p => p.includes("CORINGA")).length;
+        }
+        
+        // Adicionar jogador CORINGA
+        function addCoringa() {
+            if (countCoringas() >= 3) {
+                alert('Já existem 3 CORINGAs no torneio. Não é possível adicionar mais.');
+                return;
+            }
+            
+            let coringaNumber = 1;
+            let coringaName = "CORINGA";
+            
+            while (players.includes(coringaName)) {
+                coringaNumber++;
+                coringaName = `CORINGA ${coringaNumber}`;
+            }
+            
+            if (!players.includes(coringaName)) {
+                players.push(coringaName);
+                
+                if (tournamentStarted) {
+                    waitingPlayers.push(coringaName);
+                    updateExitOrder();
+                }
+                
+                stats[coringaName] = { wins: 0, losses: 0, matches: 0 };
+                consecutiveWins[coringaName] = 0;
+                
+                updatePlayersList();
+                updateStartButton();
+                updateDisplay();
+                updateModernStats();
+                updateConfrontosStats();
+                updateSwapDropdowns();
+                updatePurchasePlayersButtons();
+                saveToLocalStorage();
+                
+                if (tournamentStarted) {
+                    alert(`Jogador ${coringaName} adicionado à fila de espera!`);
+                }
+            } else {
+                alert('CORINGA já foi adicionado.');
+            }
+        }
+        
+        // Adicionar jogador
+        function addPlayer() {
+            const name = playerNameInput.value.trim();
+            if (name && !players.includes(name)) {
+                players.push(name);
+                
+                if (tournamentStarted) {
+                    waitingPlayers.push(name);
+                    updateExitOrder();
+                }
+                
+                stats[name] = { wins: 0, losses: 0, matches: 0 };
+                consecutiveWins[name] = 0;
+                playerPoints[name] = playerPoints[name] || 0;
+                playerErrors[name] = 0;
+                currentMatchPoints[name] = currentMatchPoints[name] || 0;
+                currentMatchErrors[name] = 0;
+                
+                updatePlayersList();
+                updateStartButton();
+                updateDisplay();
+                updateModernStats();
+                updateConfrontosStats();
+                updateSwapDropdowns();
+                updatePurchasePlayersButtons();
+                playerNameInput.value = '';
+                playerNameInput.focus();
+                saveToLocalStorage();
+                
+                if (tournamentStarted) {
+                    alert(`Jogador ${name} adicionado à fila de espera!`);
+                }
+            } else if (players.includes(name)) {
+                alert('Este jogador já foi adicionado.');
+            }
+        }
+        
+        // Iniciar torneio
+        function startTournament() {
+            const regularPlayers = players.filter(p => !p.includes("CORINGA"));
+            if (regularPlayers.length < 4) {
+                alert('É necessário pelo menos 4 jogadores regulares (não CORINGAs) para iniciar o torneio.');
+                return;
+            }
+            
+            tournamentStarted = true;
+            currentMatch = 1;
+            updateStartButton();
+            updateTournamentStatus();
+            
+            requestWakeLock();
+            
+            const shuffledPlayers = [...players].sort(() => Math.random() - 0.5);
+            
+            currentPlayers = shuffledPlayers.slice(0, Math.min(4, shuffledPlayers.length));
+            
+            waitingPlayers = shuffledPlayers.slice(Math.min(4, shuffledPlayers.length));
+            
+            if (currentPlayers.length >= 2) {
+                team1 = currentPlayers.slice(0, 2);
+            }
+            
+            if (currentPlayers.length >= 4) {
+                team2 = currentPlayers.slice(2, 4);
+            }
+            
+            updateExitOrder();
+            
+            players.forEach(player => {
+                if (!consecutiveWins[player]) {
+                    consecutiveWins[player] = 0;
+                }
+                if (!playerPoints[player]) {
+                    playerPoints[player] = 0;
+                }
+                if (!playerErrors[player]) {
+                    playerErrors[player] = 0;
+                }
+                if (!currentMatchPoints[player]) {
+                    currentMatchPoints[player] = 0;
+                }
+                if (!currentMatchErrors[player]) {
+                    currentMatchErrors[player] = 0;
+                }
+            });
+            
+            teamScores = { team1: 0, team2: 0 };
+            
+            saveCurrentStateToHistory();
+            
+            updateDisplay();
+            updateSwapDropdowns();
+            saveToLocalStorage();
+        }
+        
+        // Atualizar lista de jogadores (com número de jogos e vitórias consecutivas formatado inline)
+        function updatePlayersList() {
+            playersList.innerHTML = '';
+            players.forEach(player => {
+                const li = document.createElement('li');
+                
+                const isCoringa = player.includes("CORINGA");
+                const playerStats = stats[player] || { matches: 0 };
+                const gamesCount = playerStats.matches || 0;
+                const playerConsecutiveWins = consecutiveWins[player] || 0;
+                
+                li.innerHTML = `
+                    <div class="player-name-with-games">
+                        <span class="player-name-inline">
+                            ${isCoringa ? '<span style="color: #9c27b0; font-weight: bold;">' + player + '</span>' : player}
+                        </span>
+                        <span class="player-games-separator">-</span>
+                        <span class="player-games-inline">${gamesCount}</span>
+                        ${playerConsecutiveWins > 0 ? `<span class="player-wins-separator">/</span><span class="player-wins-inline">${playerConsecutiveWins}</span>` : ''}
+                    </div>
+                    <button onclick="showRemovePlayerDialog('${player.replace(/'/g, "\\'")}')">Remover</button>
+                `;
+                playersList.appendChild(li);
+            });
+        }
+        
+        // Mostrar diálogo para remover jogador
+        function showRemovePlayerDialog(playerName) {
+            playerToRemove = playerName;
+            playerToRemoveSpan.textContent = playerName;
+            removePlayerDialog.style.display = 'block';
+            overlay.style.display = 'block';
+            removePasswordInput.value = '';
+            removePasswordInput.focus();
+        }
+        
+        // Esconder diálogo para remover jogador
+        function hideRemovePlayerDialog() {
+            removePlayerDialog.style.display = 'none';
+            overlay.style.display = 'none';
+            playerToRemove = '';
+        }
+        
+        // Verificar senha para remover jogador
+        function checkRemovePassword() {
+            if (removePasswordInput.value === 'peteca') {
+                removePlayerConfirmed(playerToRemove);
+                hideRemovePlayerDialog();
+            } else {
+                alert('Senha incorreta. Tente novamente.');
+                removePasswordInput.value = '';
+                removePasswordInput.focus();
+            }
+        }
+        
+        // Remover jogador (após confirmação de senha)
+        function removePlayerConfirmed(playerName) {
+            if (tournamentStarted) {
+                const isPlaying = currentPlayers.includes(playerName);
+                
+                if (isPlaying && currentPlayers.length <= 4) {
+                    if (!confirm(`O jogador ${playerName} está atualmente em jogo. Remover mesmo assim?`)) {
+                        return;
+                    }
+                }
+            }
+            
+            if (!removedPlayers.includes(playerName)) {
+                removedPlayers.push(playerName);
+            }
+            
+            players = players.filter(p => p !== playerName);
+            currentPlayers = currentPlayers.filter(p => p !== playerName);
+            waitingPlayers = waitingPlayers.filter(p => p !== playerName);
+            exitOrder = exitOrder.filter(p => p !== playerName);
+            
+            if (team1.includes(playerName)) {
+                team1 = team1.filter(p => p !== playerName);
+                
+                if (team1.length === 1 && waitingPlayers.length > 0) {
+                    team1.push(waitingPlayers.shift());
+                }
+            }
+            
+            if (team2.includes(playerName)) {
+                team2 = team2.filter(p => p !== playerName);
+                
+                if (team2.length === 1 && waitingPlayers.length > 0) {
+                    team2.push(waitingPlayers.shift());
+                }
+            }
+            
+            // Zerar vitórias consecutivas ao remover jogador
+            if (consecutiveWins[playerName]) {
+                consecutiveWins[playerName] = 0;
+            }
+            
+            const regularPlayers = players.filter(p => !p.includes("CORINGA"));
+            if (regularPlayers.length < 4 && tournamentStarted) {
+                if (confirm('Não há jogadores regulares suficientes para continuar o torneio. Deseja parar o torneio?')) {
+                    tournamentStarted = false;
+                    resetGameData();
+                }
+            }
+            
+            updateExitOrder();
+            
+            updatePlayersList();
+            updateStartButton();
+            updateDisplay();
+            updateModernStats();
+            updateConfrontosStats();
+            updatePointsStats();
+            updateSwapDropdowns();
+            updatePurchasePlayersButtons();
+            saveToLocalStorage();
+            
+            if (tournamentStarted) {
+                alert(`Jogador ${playerName} removido do torneio!`);
+            }
+        }
+        
+        // Resetar dados do jogo (sem remover jogadores)
+        function resetGameData() {
+            currentPlayers = [];
+            waitingPlayers = [];
+            team1 = [];
+            team2 = [];
+            teamConsecutiveWins = { team1: 0, team2: 0 };
+            exitOrder = [];
+            currentMatch = 0;
+            tournamentStarted = false;
+            removedPlayers = [];
+            matchHistory = [];
+            tournamentTimeElapsed = 0;
+            teamStats = {};
+            consecutiveWins = {};
+            coringaUsedInSorteio = [];
+            playerPoints = {};
+            playerErrors = {};
+            pointsHistory = [];
+            currentMatchPoints = {};
+            currentMatchErrors = {};
+            teamScores = { team1: 0, team2: 0 };
+            undoneActions = [];
+            confrontosHistory = [];
+            
+            for (const player in stats) {
+                stats[player] = { wins: 0, losses: 0, matches: 0 };
+            }
+            
+            releaseWakeLock();
+            
+            consecutiveInfo.style.display = 'none';
+        }
+        
+        // Confirmar vitória (exibir diálogo de confirmação)
+        function confirmVictory(winningTeamId) {
+            if (!tournamentStarted) {
+                alert('O torneio ainda não foi iniciado. Adicione jogadores e clique em "Iniciar Torneio".');
+                return;
+            }
+            
+            if (team1.length === 0 || team2.length === 0) {
+                alert('Não há duplas formadas para registrar vitória.');
+                return;
+            }
+            
+            if ((winningTeamId === 1 && teamScores.team1 < teamScores.team2) || 
+                (winningTeamId === 2 && teamScores.team2 < teamScores.team1)) {
+                alert('A dupla com menos pontos não pode ser marcada como vencedora!');
+                return;
+            }
+            
+            pendingVictoryTeam = winningTeamId;
+            const winningTeam = winningTeamId === 1 ? team1 : team2;
+            
+            victoryDialogTitle.textContent = 'Confirmar Vitória';
+            victoryDialogMessage.textContent = `A Dupla ${winningTeamId} (${winningTeam.join(' e ')}) venceu a partida?`;
+            
+            victoryDialog.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+        
+        // Esconder diálogo de confirmação de vitória
+        function hideVictoryDialog() {
+            victoryDialog.style.display = 'none';
+            overlay.style.display = 'none';
+            pendingVictoryTeam = 0;
+        }
+        
+        // Confirmar ação de vitória (após confirmação)
+        function confirmVictoryAction() {
+            if (pendingVictoryTeam !== 0) {
+                registerVictory(pendingVictoryTeam);
+                hideVictoryDialog();
+            }
+        }
+        
+        // Registrar vitória
+        function registerVictory(winningTeamId) {
+            if (!tournamentStarted) {
+                alert('O torneio ainda não foi iniciado. Adicione jogadores e clique em "Iniciar Torneio".');
+                return;
+            }
+            
+            if (team1.length === 0 || team2.length === 0) {
+                alert('Não há duplas formadas para registrar vitória.');
+                return;
+            }
+            
+            saveCurrentStateToHistory();
+            
+            let winners, losers;
+            const winningTeamKey = winningTeamId === 1 ? getTeamKey(team1) : getTeamKey(team2);
+            const losingTeamKey = winningTeamId === 1 ? getTeamKey(team2) : getTeamKey(team1);
+            
+            if (winningTeamId === 1) {
+                winners = team1;
+                losers = team2;
+                
+                teamConsecutiveWins.team1++;
+                teamConsecutiveWins.team2 = 0;
+            } else {
+                winners = team2;
+                losers = team1;
+                
+                teamConsecutiveWins.team2++;
+                teamConsecutiveWins.team1 = 0;
+            }
+            
+            confrontosHistory.push({
+                match: currentMatch,
+                team1: [...team1],
+                team2: [...team2],
+                winner: winningTeamId,
+                score: `${teamScores.team1} x ${teamScores.team2}`
+            });
+            
+            winners.forEach(player => {
+                stats[player].wins++;
+                stats[player].matches++;
+                consecutiveWins[player]++;
+                
+                // Mudado de 6 para 4 vitórias consecutivas
+                if (consecutiveWins[player] >= 4 && waitingPlayers.length > 0) {
+                    const replacement = waitingPlayers.shift();
+                    
+                    if (team1.includes(player)) {
+                        team1 = team1.map(p => p === player ? replacement : p);
+                    } else if (team2.includes(player)) {
+                        team2 = team2.map(p => p === player ? replacement : p);
+                    }
+                    
+                    waitingPlayers.push(player);
+                    
+                    consecutiveWins[player] = 0;
+                    
+                    alert(`${player} atingiu 4 vitórias consecutivas e foi substituído por ${replacement}!`);
+                }
+            });
+            
+            losers.forEach(player => {
+                stats[player].losses++;
+                stats[player].matches++;
+                consecutiveWins[player] = 0; // Zerar vitórias consecutivas ao perder
+            });
+            
+            if (!teamStats[winningTeamKey]) {
+                teamStats[winningTeamKey] = { wins: 0, losses: 0, matches: 0, players: winners };
+            }
+            teamStats[winningTeamKey].wins++;
+            teamStats[winningTeamKey].matches++;
+            
+            if (!teamStats[losingTeamKey]) {
+                teamStats[losingTeamKey] = { wins: 0, losses: 0, matches: 0, players: losers };
+            }
+            teamStats[losingTeamKey].losses++;
+            teamStats[losingTeamKey].matches++;
+            
+            currentMatch++;
+            updateTournamentStatus();
+            
+            if (teamConsecutiveWins.team1 >= 3 || teamConsecutiveWins.team2 >= 3) {
+                const winningTeamId = teamConsecutiveWins.team1 >= 3 ? 1 : 2;
+                const winningTeam = winningTeamId === 1 ? team1 : team2;
+                const losingTeam = winningTeamId === 1 ? team2 : team1;
+                
+                consecutiveInfo.style.display = 'block';
+                consecutiveInfo.textContent = `Dupla ${winningTeamId} com 3 vitórias consecutivas! Os jogadores serão redistribuídos.`;
+                
+                losingTeam.forEach(player => {
+                    if (!waitingPlayers.includes(player)) {
+                        waitingPlayers.push(player);
+                    }
+                });
+                
+                if (winningTeamId === 1) {
+                    const [winner1, winner2] = winningTeam;
+                    
+                    if (waitingPlayers.length > 0) {
+                        team1 = [winner1, waitingPlayers.shift()];
+                    } else {
+                        team1 = [winner1];
+                    }
+                    
+                    if (waitingPlayers.length > 0) {
+                        team2 = [winner2, waitingPlayers.shift()];
+                    } else {
+                        team2 = [winner2];
+                    }
+                } else {
+                    const [winner1, winner2] = winningTeam;
+                    
+                    if (waitingPlayers.length > 0) {
+                        team1 = [winner1, waitingPlayers.shift()];
+                    } else {
+                        team1 = [winner1];
+                    }
+                    
+                    if (waitingPlayers.length > 0) {
+                        team2 = [winner2, waitingPlayers.shift()];
+                    } else {
+                        team2 = [winner2];
+                    }
+                }
+                
+                teamConsecutiveWins = { team1: 0, team2: 0 };
+            } else {
+                consecutiveInfo.style.display = 'none';
+                
+                const losingTeam = winningTeamId === 1 ? team2 : team1;
+                
+                losingTeam.forEach(player => {
+                    if (!waitingPlayers.includes(player)) {
+                        waitingPlayers.push(player);
+                    }
+                });
+                
+                if (waitingPlayers.length > 0) {
+                    if (winningTeamId === 1) {
+                        if (waitingPlayers.length >= 2) {
+                            team2 = [waitingPlayers.shift(), waitingPlayers.shift()];
+                        }
+                    } else {
+                        if (waitingPlayers.length >= 2) {
+                            team1 = [waitingPlayers.shift(), waitingPlayers.shift()];
+                        }
+                    }
+                }
+            }
+            
+            currentPlayers = [...team1, ...team2];
+            
+            updateExitOrder();
+            
+            players.forEach(player => {
+                currentMatchPoints[player] = 0;
+                currentMatchErrors[player] = 0;
+            });
+            pointsHistory = [];
+            teamScores = { team1: 0, team2: 0 };
+            
+            updatePlayersList(); // Atualizar a lista para mostrar novo número de jogos e vitórias consecutivas
+            updateModernStats();
+            updateConfrontosStats();
+            updatePointsStats();
+            
+            saveToLocalStorage();
+            
+            updateDisplay();
+        }
+        
+        // Gerar chave única para uma dupla (ordena os nomes para garantir unicidade)
+        function getTeamKey(team) {
+            return team.slice().sort().join('+');
+        }
+        
+        // Mostrar diálogo simples (sem senha)
+        function showSimpleDialog(action) {
+            currentAction = action;
+            
+            if (action === 'back') {
+                simpleDialogTitle.textContent = 'Voltar Partida';
+                simpleDialogMessage.textContent = 'Tem certeza que deseja voltar para a partida anterior?';
+            } else if (action === 'swap') {
+                const player1 = swapPlayer1Select.value;
+                const player2 = swapPlayer2Select.value;
+                
+                if (!player1 || !player2) {
+                    alert('Selecione dois jogadores para trocar.');
+                    return;
+                }
+                
+                if (player1 === player2) {
+                    alert('Selecione jogadores diferentes para trocar.');
+                    return;
+                }
+                
+                pendingSwapPlayers = { player1, player2 };
+                simpleDialogTitle.textContent = 'Confirmar Troca';
+                simpleDialogMessage.textContent = `Tem certeza que deseja trocar ${player1} com ${player2}?`;
+            }
+            
+            simpleDialog.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+        
+        // Esconder diálogo simples
+        function hideSimpleDialog() {
+            simpleDialog.style.display = 'none';
+            overlay.style.display = 'none';
+            currentAction = '';
+        }
+        
+        // Confirmar ação simples
+        function confirmSimpleAction() {
+            if (currentAction === 'back') {
+                goBackToPreviousMatch();
+            } else if (currentAction === 'swap') {
+                swapPlayers(pendingSwapPlayers.player1, pendingSwapPlayers.player2);
+            }
+            hideSimpleDialog();
+        }
+        
+        // Voltar para a partida anterior
+        function goBackToPreviousMatch() {
+            if (matchHistory.length === 0) {
+                alert("Não há partidas anteriores para voltar.");
+                return;
+            }
+            
+            undoneActions.push({
+                players: [...players],
+                currentPlayers: [...currentPlayers],
+                waitingPlayers: [...waitingPlayers],
+                stats: JSON.parse(JSON.stringify(stats)),
+                teamStats: JSON.parse(JSON.stringify(teamStats)),
+                team1: [...team1],
+                team2: [...team2],
+                teamConsecutiveWins: {...teamConsecutiveWins},
+                exitOrder: [...exitOrder],
+                currentMatch: currentMatch,
+                tournamentTimeElapsed: tournamentTimeElapsed,
+                consecutiveWins: {...consecutiveWins},
+                coringaUsedInSorteio: [...coringaUsedInSorteio],
+                playerPoints: JSON.parse(JSON.stringify(playerPoints)),
+                playerErrors: JSON.parse(JSON.stringify(playerErrors)),
+                pointsHistory: [...pointsHistory],
+                currentMatchPoints: JSON.parse(JSON.stringify(currentMatchPoints)),
+                currentMatchErrors: JSON.parse(JSON.stringify(currentMatchErrors)),
+                teamScores: {...teamScores},
+                confrontosHistory: [...confrontosHistory],
+                purchases: JSON.parse(JSON.stringify(purchases))
+            });
+            
+            const previousState = matchHistory.pop();
+            
+            players = previousState.players;
+            currentPlayers = previousState.currentPlayers;
+            waitingPlayers = previousState.waitingPlayers;
+            stats = previousState.stats;
+            teamStats = previousState.teamStats || {};
+            team1 = previousState.team1;
+            team2 = previousState.team2;
+            teamConsecutiveWins = previousState.teamConsecutiveWins;
+            exitOrder = previousState.exitOrder;
+            currentMatch = previousState.currentMatch;
+            tournamentTimeElapsed = previousState.tournamentTimeElapsed;
+            consecutiveWins = previousState.consecutiveWins || {};
+            coringaUsedInSorteio = previousState.coringaUsedInSorteio || [];
+            playerPoints = previousState.playerPoints || {};
+            playerErrors = previousState.playerErrors || {};
+            pointsHistory = previousState.pointsHistory || [];
+            currentMatchPoints = previousState.currentMatchPoints || {};
+            currentMatchErrors = previousState.currentMatchErrors || {};
+            teamScores = previousState.teamScores || { team1: 0, team2: 0 };
+            confrontosHistory = previousState.confrontosHistory || [];
+            purchases = previousState.purchases || [];
+            
+            updatePlayersList();
+            updateStartButton();
+            updateDisplay();
+            updateModernStats();
+            updateConfrontosStats();
+            updatePointsStats();
+            updateTournamentStatus();
+            updateSwapDropdowns();
+            updateNavigationButtons();
+            updatePurchasesList();
+            updatePurchasesSummary();
+            updatePurchasesSummaryResults();
+            updatePurchasePlayersButtons();
+            
+            saveToLocalStorage();
+        }
+        
+        // Refazer ação desfeita
+        function redoAction() {
+            if (undoneActions.length === 0) {
+                alert("Não há ações para refazer.");
+                return;
+            }
+            
+            saveCurrentStateToHistory();
+            
+            const nextState = undoneActions.pop();
+            
+            players = nextState.players;
+            currentPlayers = nextState.currentPlayers;
+            waitingPlayers = nextState.waitingPlayers;
+            stats = nextState.stats;
+            teamStats = nextState.teamStats || {};
+            team1 = nextState.team1;
+            team2 = nextState.team2;
+            teamConsecutiveWins = nextState.teamConsecutiveWins;
+            exitOrder = nextState.exitOrder;
+            currentMatch = nextState.currentMatch;
+            tournamentTimeElapsed = nextState.tournamentTimeElapsed;
+            consecutiveWins = nextState.consecutiveWins || {};
+            coringaUsedInSorteio = nextState.coringaUsedInSorteio || [];
+            playerPoints = nextState.playerPoints || {};
+            playerErrors = nextState.playerErrors || {};
+            pointsHistory = nextState.pointsHistory || [];
+            currentMatchPoints = nextState.currentMatchPoints || {};
+            currentMatchErrors = nextState.currentMatchErrors || {};
+            teamScores = nextState.teamScores || { team1: 0, team2: 0 };
+            confrontosHistory = nextState.confrontosHistory || [];
+            purchases = nextState.purchases || [];
+            
+            updatePlayersList();
+            updateStartButton();
+            updateDisplay();
+            updateModernStats();
+            updateConfrontosStats();
+            updatePointsStats();
+            updateTournamentStatus();
+            updateSwapDropdowns();
+            updateNavigationButtons();
+            updatePurchasesList();
+            updatePurchasesSummary();
+            updatePurchasesSummaryResults();
+            updatePurchasePlayersButtons();
+            
+            saveToLocalStorage();
+        }
+        
+        // Atualizar a ordem de saída
+        function updateExitOrder() {
+            exitOrder = [];
+            
+            waitingPlayers.forEach(player => {
+                if (!exitOrder.includes(player)) {
+                    exitOrder.push(player);
+                }
+            });
+            
+            currentPlayers.forEach(player => {
+                if (!exitOrder.includes(player)) {
+                    exitOrder.push(player);
+                }
+            });
+        }
+        
+        // Atualizar a exibição
+        function updateDisplay() {
+            team1ScoreElement.textContent = teamScores.team1;
+            team2ScoreElement.textContent = teamScores.team2;
+            
+            team1Element.innerHTML = '';
+            if (team1.length > 0) {
+                team1.forEach(player => {
+                    const playerDiv = document.createElement('div');
+                    const isCoringa = player.includes("CORINGA");
+                    playerDiv.className = `team-player ${isCoringa ? "player-coringa" : ""}`;
+                    
+                    const pointsButtons = document.createElement('div');
+                    pointsButtons.className = 'player-points-buttons';
+                    
+                    const playerNameContainer = document.createElement('div');
+                    playerNameContainer.className = 'player-name-with-games';
+                    
+                    const playerName = document.createElement('div');
+                    playerName.className = 'player-name';
+                    
+                    // Formatar nome com número de jogos e vitórias consecutivas inline
+                    const playerStats = stats[player] || { matches: 0 };
+                    const gamesCount = playerStats.matches || 0;
+                    const playerConsecutiveWins = consecutiveWins[player] || 0;
+                    
+                    playerName.innerHTML = `
+                        <span class="player-name-inline">
+                            ${player}
+                        </span>
+                        <span class="player-games-separator">-</span>
+                        <span class="player-games-inline">${gamesCount}</span>
+                        ${playerConsecutiveWins > 0 ? `<span class="player-wins-separator">/</span><span class="player-wins-inline">${playerConsecutiveWins}</span>` : ''}
+                    `;
+                    
+                    const pointButton = document.createElement('button');
+                    pointButton.className = 'btn-point-small';
+                    pointButton.innerHTML = `Acertou ${currentMatchPoints[player] || 0}`;
+                    pointButton.onclick = () => addPoint(player);
+                    
+                    pointsButtons.appendChild(playerName);
+                    pointsButtons.appendChild(pointButton);
+                    
+                    playerDiv.appendChild(pointsButtons);
+                    
+                    if (consecutiveWins[player] > 0) {
+                        const consecutiveIndicator = document.createElement('div');
+                        consecutiveIndicator.className = 'consecutive-individual';
+                        consecutiveIndicator.textContent = consecutiveWins[player];
+                        playerDiv.appendChild(consecutiveIndicator);
+                    }
+                    
+                    team1Element.appendChild(playerDiv);
+                });
+                
+                if (teamConsecutiveWins.team1 > 0) {
+                    team1WinsElement.textContent = `${teamConsecutiveWins.team1} vitória(s) consecutiva(s)`;
+                } else {
+                    team1WinsElement.textContent = '';
+                }
+                
+                sorteioTeam1Button.style.display = team1.some(p => p.includes("CORINGA")) ? 'block' : 'none';
+            } else {
+                team1Element.innerHTML = '<p>A definir</p>';
+                team1WinsElement.textContent = '';
+                sorteioTeam1Button.style.display = 'none';
+            }
+            
+            team2Element.innerHTML = '';
+            if (team2.length > 0) {
+                team2.forEach(player => {
+                    const playerDiv = document.createElement('div');
+                    const isCoringa = player.includes("CORINGA");
+                    playerDiv.className = `team-player ${isCoringa ? "player-coringa" : ""}`;
+                    
+                    const pointsButtons = document.createElement('div');
+                    pointsButtons.className = 'player-points-buttons';
+                    
+                    const playerNameContainer = document.createElement('div');
+                    playerNameContainer.className = 'player-name-with-games';
+                    
+                    const playerName = document.createElement('div');
+                    playerName.className = 'player-name';
+                    
+                    // Formatar nome com número de jogos e vitórias consecutivas inline
+                    const playerStats = stats[player] || { matches: 0 };
+                    const gamesCount = playerStats.matches || 0;
+                    const playerConsecutiveWins = consecutiveWins[player] || 0;
+                    
+                    playerName.innerHTML = `
+                        <span class="player-name-inline">
+                            ${player}
+                        </span>
+                        <span class="player-games-separator">-</span>
+                        <span class="player-games-inline">${gamesCount}</span>
+                        ${playerConsecutiveWins > 0 ? `<span class="player-wins-separator">/</span><span class="player-wins-inline">${playerConsecutiveWins}</span>` : ''}
+                    `;
+                    
+                    const pointButton = document.createElement('button');
+                    pointButton.className = 'btn-point-small';
+                    pointButton.innerHTML = `Acertou ${currentMatchPoints[player] || 0}`;
+                    pointButton.onclick = () => addPoint(player);
+                    
+                    pointsButtons.appendChild(playerName);
+                    pointsButtons.appendChild(pointButton);
+                    
+                    playerDiv.appendChild(pointsButtons);
+                    
+                    if (consecutiveWins[player] > 0) {
+                        const consecutiveIndicator = document.createElement('div');
+                        consecutiveIndicator.className = 'consecutive-individual';
+                        consecutiveIndicator.textContent = consecutiveWins[player];
+                        playerDiv.appendChild(consecutiveIndicator);
+                    }
+                    
+                    team2Element.appendChild(playerDiv);
+                });
+                
+                if (teamConsecutiveWins.team2 > 0) {
+                    team2WinsElement.textContent = `${teamConsecutiveWins.team2} vitória(s) consecutiva(s)`;
+                } else {
+                    team2WinsElement.textContent = '';
+                }
+                
+                sorteioTeam2Button.style.display = team2.some(p => p.includes("CORINGA")) ? 'block' : 'none';
+            } else {
+                team2Element.innerHTML = '<p>A definir</p>';
+                team2WinsElement.textContent = '';
+                sorteioTeam2Button.style.display = 'none';
+            }
+            
+            waitingPlayersElement.innerHTML = '';
+            if (waitingPlayers.length > 0) {
+                const ol = document.createElement('ol');
+                waitingPlayers.forEach((player) => {
+                    const li = document.createElement('li');
+                    
+                    const isCoringa = player.includes("CORINGA");
+                    const playerStats = stats[player] || { matches: 0 };
+                    const gamesCount = playerStats.matches || 0;
+                    const playerConsecutiveWins = consecutiveWins[player] || 0;
+                    
+                    li.innerHTML = `
+                        <div class="player-name-with-games">
+                            <span class="player-name-inline">
+                                ${isCoringa ? '<span style="color: #9c27b0; font-weight: bold;">' + player + '</span>' : player}
+                            </span>
+                            <span class="player-games-separator">-</span>
+                            <span class="player-games-inline">${gamesCount}</span>
+                            ${playerConsecutiveWins > 0 ? `<span class="player-wins-separator">/</span><span class="player-wins-inline">${playerConsecutiveWins}</span>` : ''}
+                        </div>
+                    `;
+                    
+                    if (player.includes("CORINGA")) {
+                        li.style.fontWeight = 'bold';
+                    }
+                    ol.appendChild(li);
+                });
+                waitingPlayersElement.appendChild(ol);
+            } else {
+                waitingPlayersElement.textContent = 'Nenhum jogador na espera';
+            }
+        }
+        
+        // Realizar sorteio do CORINGA
+        function realizarSorteio(teamId) {
+            saveCurrentStateToHistory();
+            
+            const team = teamId === 1 ? team1 : team2;
+            
+            const coringaIndex = team.findIndex(p => p.includes("CORINGA"));
+            
+            if (coringaIndex === -1) {
+                alert("CORINGA não está nesta equipe!");
+                return;
+            }
+            
+            const coringaName = team[coringaIndex];
+            
+            const eligiblePlayers = waitingPlayers.filter((player, index) => 
+                index < waitingPlayers.length - 2 && 
+                !player.includes("CORINGA") && 
+                !coringaUsedInSorteio.includes(player)
+            );
+            
+            if (eligiblePlayers.length === 0) {
+                if (waitingPlayers.filter(p => !p.includes("CORINGA")).length <= 2) {
+                    alert("Não há jogadores suficientes na fila de espera para realizar o sorteio!");
+                    return;
+                }
+                
+                coringaUsedInSorteio = [];
+                
+                const newEligiblePlayers = waitingPlayers.filter((player, index) => 
+                    index < waitingPlayers.length - 2 && !player.includes("CORINGA")
+                );
+                
+                if (newEligiblePlayers.length === 0) {
+                    alert("Não há jogadores elegíveis para o sorteio!");
+                    return;
+                }
+                
+                const selectedPlayer = newEligiblePlayers.reduce((prev, curr) => 
+                    stats[prev].matches < stats[curr].matches ? prev : curr
+                );
+                
+                team[coringaIndex] = selectedPlayer;
+                
+                const playerIndex = waitingPlayers.indexOf(selectedPlayer);
+                if (playerIndex !== -1) {
+                    waitingPlayers.splice(playerIndex, 1);
+                }
+                
+                waitingPlayers.push(coringaName);
+                
+                coringaUsedInSorteio.push(selectedPlayer);
+                
+                alert(`${coringaName} foi substituído por ${selectedPlayer}!`);
+            } else {
+                const selectedPlayer = eligiblePlayers.reduce((prev, curr) => 
+                    stats[prev].matches < stats[curr].matches ? prev : curr
+                );
+                
+                team[coringaIndex] = selectedPlayer;
+                
+                const playerIndex = waitingPlayers.indexOf(selectedPlayer);
+                if (playerIndex !== -1) {
+                    waitingPlayers.splice(playerIndex, 1);
+                }
+                
+                waitingPlayers.push(coringaName);
+                
+                coringaUsedInSorteio.push(selectedPlayer);
+                
+                alert(`${coringaName} foi substituído por ${selectedPlayer}!`);
+            }
+            
+            currentPlayers = [...team1, ...team2];
+            
+            updateExitOrder();
+            
+            updateDisplay();
+            
+            saveToLocalStorage();
+        }
+        
+        // Adicionar ponto para um jogador
+        function addPoint(player) {
+            saveCurrentStateToHistory();
+            
+            const playerTeam = team1.includes(player) ? 1 : 2;
+            
+            currentMatchPoints[player] = (currentMatchPoints[player] || 0) + 1;
+            
+            playerPoints[player] = (playerPoints[player] || 0) + 1;
+            
+            teamScores[`team${playerTeam}`]++;
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            pointsHistory.push({
+                player,
+                type: 'point',
+                time: timeString,
+                team: playerTeam
+            });
+            
+            updateDisplay();
+            updatePointsStats();
+            
+            saveToLocalStorage();
+        }
+        
+        // Adicionar erro do adversário (ponto sem jogador específico)
+        function addErrorAdversario(teamId) {
+            saveCurrentStateToHistory();
+            
+            teamScores[`team${teamId}`]++;
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            pointsHistory.push({
+                player: 'Erro do Adversário',
+                type: 'error_adversario',
+                time: timeString,
+                team: teamId
+            });
+            
+            updateDisplay();
+            updatePointsStats();
+            
+            saveToLocalStorage();
+        }
+        
+        // Atualizar estatísticas modernas (excluindo CORINGAs)
+        function updateModernStats() {
+            modernStatsElement.innerHTML = '';
+            
+            const statsArray = Object.entries(stats)
+                .filter(([player]) => !player.includes("CORINGA"))
+                .map(([player, data]) => {
+                    const winPercentage = data.matches > 0 ? ((data.wins / data.matches) * 100).toFixed(1) : '0.0';
+                    const consecutiveWinsCount = consecutiveWins[player] || 0;
+                    return { player, ...data, winPercentage, consecutiveWins: consecutiveWinsCount };
+                });
+            
+            statsArray.sort((a, b) => {
+                if (b.wins !== a.wins) {
+                    return b.wins - a.wins;
+                }
+                return a.losses - b.losses;
+            });
+            
+            // Verificar quais jogadores estão empatados em último lugar
+            let lastPlaceEmojiPlayers = [];
+            if (statsArray.length > 0) {
+                const lastWins = statsArray[statsArray.length - 1].wins;
+                const lastLosses = statsArray[statsArray.length - 1].losses;
+                
+                // Encontrar todos os jogadores com os mesmos números de vitórias e derrotas do último
+                lastPlaceEmojiPlayers = statsArray.filter(s => s.wins === lastWins && s.losses === lastLosses);
+            }
+            
+            statsArray.forEach(({ player, matches, wins, losses, winPercentage, consecutiveWins: consecutiveWinsCount }, index) => {
+                const isRemoved = removedPlayers.includes(player);
+                
+                const row = document.createElement('div');
+                row.className = 'stats-row';
+                
+                let emoji = '';
+                if (index === 0) emoji = '🏆';
+                else if (index === 1) emoji = '🥈';
+                else if (index === 2) emoji = '🥉';
+                // Mostrar emoji 💩 para todos que estão empatados em último lugar
+                else if (lastPlaceEmojiPlayers.some(p => p.player === player)) {
+                    emoji = '💩';
+                }
+                
+                row.innerHTML = `
+                    <div class="stats-position">${index + 1}º</div>
+                    <div class="stats-player ${isRemoved ? 'player-removed' : ''}">
+                        <span class="player-name-inline">${player}</span>
+                        ${isRemoved ? ' <span style="color: #ff4757; font-style: italic;">(saiu)</span>' : ''}
+                    </div>
+                    <div class="stats-numbers">
+                        <div class="stats-wins">${wins}V</div>
+                        <div class="stats-losses">${losses}D</div>
+                        <div class="stats-percent">${winPercentage}%</div>
+                    </div>
+                    <div class="stats-emoji">${emoji}</div>
+                `;
+                modernStatsElement.appendChild(row);
+            });
+        }
+        
+        // Atualizar relatório de confrontos (apenas informações básicas)
+        function updateConfrontosStats() {
+            teamStatsElement.innerHTML = '';
+            
+            if (confrontosHistory.length === 0) {
+                teamStatsElement.innerHTML = '<p>Nenhum confronto registrado ainda.</p>';
+                return;
+            }
+            
+            const container = document.createElement('div');
+            container.className = 'confrontos-container';
+            
+            confrontosHistory.forEach((confronto, index) => {
+                const item = document.createElement('div');
+                item.className = 'confronto-item';
+                
+                item.innerHTML = `
+                    <div class="confronto-teams">
+                        <strong>Partida ${confronto.match}:</strong> ${confronto.team1.join(' + ')} vs ${confronto.team2.join(' + ')}
+                    </div>
+                    <div class="confronto-result">
+                        Vencedor: Dupla ${confronto.winner} (${confronto.score})
+                    </div>
+                `;
+                
+                container.appendChild(item);
+            });
+            
+            teamStatsElement.appendChild(container);
+        }
+        
+        // Atualizar estatísticas de pontos
+        function updatePointsStats() {
+            pointsStatsElement.innerHTML = '';
+            
+            const pointsArray = Object.entries(playerPoints)
+                .filter(([player]) => !player.includes("CORINGA"))
+                .map(([player, points]) => {
+                    return { player, points };
+                });
+            
+            pointsArray.sort((a, b) => b.points - a.points);
+            
+            if (pointsArray.length === 0) {
+                pointsStatsElement.innerHTML = '<p>Nenhuma estatística de pontos disponível ainda.</p>';
+                return;
+            }
+            
+            const table = document.createElement('table');
+            table.className = 'points-stats-table';
+            
+            const thead = document.createElement('thead');
+            thead.innerHTML = `
+                <tr>
+                    <th>Jogador</th>
+                    <th>Pontos</th>
+                </tr>
+            `;
+            table.appendChild(thead);
+            
+            const tbody = document.createElement('tbody');
+            pointsArray.forEach(({ player, points }) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${player}</td>
+                    <td>${points}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            table.appendChild(tbody);
+            
+            pointsStatsElement.appendChild(table);
+        }
+        
+        // Compartilhar resultados individuais
+        function shareResults() {
+            const currentDate = new Date().toLocaleDateString('pt-BR');
+            
+            const statsArray = Object.entries(stats)
+                .filter(([player]) => !player.includes("CORINGA"))
+                .map(([player, data]) => {
+                    const winPercentage = data.matches > 0 ? ((data.wins / data.matches) * 100).toFixed(1) : '0.0';
+                    const consecutiveWinsCount = consecutiveWins[player] || 0;
+                    return { player, ...data, winPercentage, consecutiveWins: consecutiveWinsCount };
+                });
+            
+            statsArray.sort((a, b) => {
+                if (b.wins !== a.wins) {
+                    return b.wins - a.wins;
+                }
+                return a.losses - b.losses;
+            });
+            
+            let content = `🏸 *PETECANDO 2026 - ESTATÍSTICAS INDIVIDUAIS* 🏸\n\n`;
+            content += `📅 Data: ${currentDate}\n`;
+            content += `⚔️ Partidas: ${currentMatch}\n\n`;
+            
+            content += `*CLASSIFICAÇÃO:*\n\n`;
+            
+            statsArray.forEach(({ player, matches, wins, losses, winPercentage, consecutiveWins: consecutiveWinsCount }, index) => {
+                const isRemoved = removedPlayers.includes(player);
+                const status = isRemoved ? " (SAIU)" : "";
+                const medal = index === 0 ? "🥇 " : index === 1 ? "🥈 " : index === 2 ? "🥉 " : "";
+                
+                content += `${medal}*${index + 1}º - ${player}${status}*\n`;
+                content += `   Partidas: ${matches} | Vitórias: ${wins} | Derrotas: ${losses} | % Vitórias: ${winPercentage}%\n`;
+                if (consecutiveWinsCount > 0) {
+                    content += `   Vitórias Consecutivas Atuais: ${consecutiveWinsCount}\n`;
+                }
+                content += `\n`;
+            });
+            
+            content += `\n📱 Gerado pelo Petecando 2026\n`;
+            content += `👨‍💻 App by Hugo Ribeiro`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Petecando 2026 - Estatísticas Individuais',
+                    text: content
+                }).catch(error => {
+                    console.log('Erro ao compartilhar:', error);
+                    copyToClipboard(content);
+                });
+            } else {
+                copyToClipboard(content);
+            }
+        }
+        
+        // Compartilhar resultados de pontos
+        function sharePointsResults() {
+            const currentDate = new Date().toLocaleDateString('pt-BR');
+            
+            const pointsArray = Object.entries(playerPoints)
+                .filter(([player]) => !player.includes("CORINGA"))
+                .map(([player, points]) => {
+                    return { player, points };
+                });
+            
+            pointsArray.sort((a, b) => b.points - a.points);
+            
+            let content = `🏸 *PETECANDO 2026 - ESTATÍSTICAS DE PONTOS* 🏸\n\n`;
+            content += `📅 Data: ${currentDate}\n`;
+            content += `⚔️ Partidas: ${currentMatch}\n\n`;
+            
+            content += `*MAIORES PONTUADORES:*\n\n`;
+            
+            pointsArray.forEach(({ player, points }, index) => {
+                const medal = index === 0 ? "🥇 " : index === 1 ? "🥈 " : index === 2 ? "🥉 " : "";
+                
+                content += `${medal}*${index + 1}º - ${player}*\n`;
+                content += `   Pontos: ${points}\n\n`;
+            });
+            
+            content += `\n📱 Gerado pelo Petecando 2026\n`;
+            content += `👨‍💻 App by Hugo Ribeiro`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Petecando 2026 - Estatísticas de Pontos',
+                    text: content
+                }).catch(error => {
+                    console.log('Erro ao compartilhar:', error);
+                    copyToClipboard(content);
+                });
+            } else {
+                copyToClipboard(content);
+            }
+        }
+        
+        // Compartilhar relatório de confrontos (texto para WhatsApp)
+        function shareConfrontosResults() {
+            const currentDate = new Date().toLocaleDateString('pt-BR');
+            
+            let content = `🏸 *PETECANDO 2026 - RELATÓRIO DE CONFRONTOS* 🏸\n\n`;
+            content += `📅 Data: ${currentDate}\n`;
+            content += `⚔️ Partidas: ${currentMatch}\n\n`;
+            
+            if (confrontosHistory.length === 0) {
+                content += `Nenhum confronto registrado ainda.\n`;
+            } else {
+                confrontosHistory.forEach((confronto, index) => {
+                    content += `*Partida ${confronto.match}:*\n`;
+                    content += `🏆 ${confronto.team1.join(' + ')} vs ${confronto.team2.join(' + ')}\n`;
+                    content += `✅ Vencedor: Dupla ${confronto.winner} (${confronto.score})\n\n`;
+                });
+            }
+            
+            content += `\n📱 Gerado pelo Petecando 2026\n`;
+            content += `👨‍💻 App by Hugo Ribeiro`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Petecando 2026 - Relatório de Confrontos',
+                    text: content
+                }).catch(error => {
+                    console.log('Erro ao compartilhar:', error);
+                    copyToClipboard(content);
+                });
+            } else {
+                copyToClipboard(content);
+            }
+        }
+        
+        // Função para copiar texto para a área de transferência
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert('Relatório copiado para a área de transferência! Cole no WhatsApp para compartilhar.');
+        }
+        
+        // Exportar dados do torneio em formato de texto
+        function exportTournamentData() {
+            const currentDate = new Date().toLocaleDateString('pt-BR');
+            
+            const statsArray = Object.entries(stats)
+                .filter(([player]) => !player.includes("CORINGA"))
+                .map(([player, data]) => {
+                    const winPercentage = data.matches > 0 ? ((data.wins / data.matches) * 100).toFixed(1) : '0.0';
+                    const consecutiveWinsCount = consecutiveWins[player] || 0;
+                    return { player, ...data, winPercentage, consecutiveWins: consecutiveWinsCount };
+                });
+            
+            statsArray.sort((a, b) => {
+                if (b.wins !== a.wins) {
+                    return b.wins - a.wins;
+                }
+                return a.losses - b.losses;
+            });
+            
+            const teamStatsArray = Object.entries(teamStats).map(([teamKey, data]) => {
+                const winPercentage = data.matches > 0 ? ((data.wins / data.matches) * 100).toFixed(1) : '0.0';
+                return { teamKey, players: data.players, ...data, winPercentage };
+            });
+            
+            teamStatsArray.sort((a, b) => {
+                if (b.wins !== a.wins) {
+                    return b.wins - a.wins;
+                }
+                return a.losses - b.losses;
+            });
+            
+            const pointsArray = Object.entries(playerPoints)
+                .filter(([player]) => !player.includes("CORINGA"))
+                .map(([player, points]) => {
+                    return { player, points };
+                });
+            
+            pointsArray.sort((a, b) => b.points - a.points);
+            
+            let content = `PETECANDO 2026 - RELATÓRIO COMPLETO DO TORNEIO\n`;
+            content += `Data: ${currentDate}\n`;
+            content += `Total de partidas: ${currentMatch}\n`;
+            content += `Jogadores participantes: ${players.filter(p => !p.includes("CORINGA")).length}\n`;
+            content += `CORINGAs: ${countCoringas()}\n`;
+            content += `Jogadores ativos: ${players.filter(p => !p.includes("CORINGA")).length - removedPlayers.filter(p => !p.includes("CORINGA")).length}\n`;
+            content += `Jogadores que saíram: ${removedPlayers.filter(p => !p.includes("CORINGA")).length}\n\n`;
+            
+            content += `==========================================\n`;
+            content += `ESTATÍSTICAS INDIVIDUAIS\n`;
+            content += `==========================================\n\n`;
+            
+            statsArray.forEach(({ player, matches, wins, losses, winPercentage, consecutiveWins: consecutiveWinsCount }, index) => {
+                const isRemoved = removedPlayers.includes(player);
+                const status = isRemoved ? " (SAIU)" : "";
+                const consecutive = consecutiveWinsCount > 0 ? ` | Vitórias consecutivas: ${consecutiveWinsCount}` : "";
+                
+                content += `${(index + 1).toString().padStart(2, '0')}º - ${player}${status}\n`;
+                content += `   Partidas: ${matches} | Vitórias: ${wins} | Derrotas: ${losses} | % Vitórias: ${winPercentage}%${consecutive}\n\n`;
+            });
+            
+            content += `==========================================\n`;
+            content += `ESTATÍSTICAS DE PONTOS\n`;
+            content += `==========================================\n\n`;
+            
+            pointsArray.forEach(({ player, points }, index) => {
+                content += `${(index + 1).toString().padStart(2, '0')}º - ${player}\n`;
+                content += `   Pontos: ${points}\n\n`;
+            });
+            
+            content += `==========================================\n`;
+            content += `RELATÓRIO DE CONFRONTOS\n`;
+            content += `==========================================\n\n`;
+            
+            confrontosHistory.forEach((confronto, index) => {
+                content += `Partida ${confronto.match}:\n`;
+                content += `   ${confronto.team1.join(' + ')} vs ${confronto.team2.join(' + ')}\n`;
+                content += `   Placar: ${confronto.score} - Vencedor: Dupla ${confronto.winner}\n\n`;
+            });
+            
+            content += `==========================================\n`;
+            content += `RELATÓRIO DE GASTOS\n`;
+            content += `==========================================\n\n`;
+            
+            if (purchases.length > 0) {
+                const playerTotals = {};
+                const playerItems = {};
+                
+                purchases.forEach(purchase => {
+                    purchase.players.forEach(player => {
+                        if (!playerTotals[player]) {
+                            playerTotals[player] = 0;
+                            playerItems[player] = {};
+                        }
+                        
+                        playerTotals[player] += purchase.price;
+                        
+                        if (!playerItems[player][purchase.item]) {
+                            playerItems[player][purchase.item] = {
+                                count: 0,
+                                price: purchase.price
+                            };
+                        }
+                        playerItems[player][purchase.item].count++;
+                    });
+                });
+                
+                const sortedPlayers = Object.entries(playerTotals)
+                    .sort((a, b) => b[1] - a[1])
+                    .map(([player, total]) => ({ player, total, items: playerItems[player] }));
+                
+                sortedPlayers.forEach(({ player, total, items }, index) => {
+                    content += `${(index + 1).toString().padStart(2, '0')}º - ${player}: R$ ${total.toFixed(2)}\n`;
+                    
+                    Object.keys(items).forEach(itemName => {
+                        const itemInfo = items[itemName];
+                        content += `   ${itemName} (${itemInfo.count}x): R$ ${(itemInfo.price * itemInfo.count).toFixed(2)}\n`;
+                    });
+                    content += `\n`;
+                });
+                
+                const grandTotal = sortedPlayers.reduce((sum, { total }) => sum + total, 0);
+                content += `TOTAL GERAL: R$ ${grandTotal.toFixed(2)}\n`;
+            } else {
+                content += `Nenhuma compra registrada.\n`;
+            }
+            
+            content += `\n==========================================\n`;
+            content += `JOGADORES QUE SAÍRAM DO TORNEIO\n`;
+            content += `==========================================\n\n`;
+            
+            if (removedPlayers.length > 0) {
+                removedPlayers.forEach((player, index) => {
+                    content += `${(index + 1).toString().padStart(2, '0')} - ${player}\n`;
+                });
+            } else {
+                content += `Nenhum jogador saiu do torneio.\n`;
+            }
+            
+            content += `\n==========================================\n`;
+            content += `HISTÓRICO DE PARTIDAS\n`;
+            content += `==========================================\n\n`;
+            
+            content += `Total de partidas jogadas: ${currentMatch}\n\n`;
+            
+            content += `\n==========================================\n`;
+            content += `RELATÓRIO GERADO EM: ${new Date().toLocaleString('pt-BR')}\n`;
+            content += `APP BY HUGO RIBEIRO\n`;
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `petecando-2026-relatorio-${new Date().toISOString().slice(0, 10)}.txt`;
+            document.body.appendChild(link);
+            link.click();
+            
+            setTimeout(() => {
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }, 100);
+        }
+        
+        // Mostrar diálogo de senha
+        function showPasswordDialog(action) {
+            currentAction = action;
+            
+            if (action === 'reset') {
+                dialogTitle.textContent = 'Reiniciar Torneio';
+                dialogMessage.textContent = 'Digite a senha para reiniciar:';
+            } else if (action === 'forward') {
+                dialogTitle.textContent = 'Avançar Partida';
+                dialogMessage.textContent = 'Digite a senha para avançar:';
+            } else if (action === 'remove') {
+                dialogTitle.textContent = 'Remover Item';
+                dialogMessage.textContent = `Digite a senha para remover 1 unidade do item:`;
+            } else if (action === 'delete') {
+                dialogTitle.textContent = 'Remover Item Completamente';
+                dialogMessage.textContent = `Digite a senha para remover completamente o item:`;
+            }
+            
+            passwordDialog.style.display = 'block';
+            overlay.style.display = 'block';
+            passwordInput.value = '';
+            passwordInput.focus();
+        }
+        
+        // Esconder diálogo de senha
+        function hidePasswordDialog() {
+            passwordDialog.style.display = 'none';
+            overlay.style.display = 'none';
+            currentAction = '';
+        }
+        
+        // Verificar senha
+        function checkPassword() {
+            if (passwordInput.value === 'peteca') {
+                if (currentAction === 'reset') {
+                    resetTournament();
+                } else if (currentAction === 'forward') {
+                    redoAction();
+                } else if (currentAction === 'remove') {
+                    removePurchaseItem(currentPurchaseId, currentPurchasePlayer);
+                } else if (currentAction === 'delete') {
+                    removePurchaseItem(currentPurchaseId, currentPurchasePlayer);
+                }
+                hidePasswordDialog();
+                currentPurchaseId = null;
+                currentPurchasePlayer = null;
+            } else {
+                alert('Senha incorreta. Tente novamente.');
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        }
+        
+        // Reiniciar torneio
+        function resetTournament() {
+            players = [];
+            currentPlayers = [];
+            waitingPlayers = [];
+            stats = {};
+            teamStats = {};
+            team1 = [];
+            team2 = [];
+            teamConsecutiveWins = { team1: 0, team2: 0 };
+            exitOrder = [];
+            currentMatch = 0;
+            tournamentStarted = false;
+            removedPlayers = [];
+            tournamentTimeElapsed = 0;
+            matchHistory = [];
+            consecutiveWins = {};
+            coringaUsedInSorteio = [];
+            playerPoints = {};
+            playerErrors = {};
+            pointsHistory = [];
+            currentMatchPoints = {};
+            currentMatchErrors = {};
+            teamScores = { team1: 0, team2: 0 };
+            undoneActions = [];
+            confrontosHistory = [];
+            purchases = [];
+            
+            localStorage.removeItem('petecaTournament');
+            sessionStorage.removeItem('petecaTournamentBackup');
+            
+            // Limpar cookie também
+            document.cookie = "petecaTournament=; max-age=0; path=/";
+            
+            playerNameInput.value = '';
+            updatePlayersList();
+            updateStartButton();
+            updateDisplay();
+            updateModernStats();
+            updateConfrontosStats();
+            updatePointsStats();
+            updateSwapDropdowns();
+            updateTournamentStatus();
+            updateNavigationButtons();
+            updatePurchasesList();
+            updatePurchasesSummary();
+            updatePurchasesSummaryResults();
+            updatePurchasePlayersButtons();
+            
+            releaseWakeLock();
+            
+            consecutiveInfo.style.display = 'none';
+            
+            alert('Torneio reiniciado com sucesso!');
+        }
+        
+        // Solicitar wake lock para manter a tela ativa
+        async function requestWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    console.log('Wake Lock ativado');
+                    
+                    document.addEventListener('visibilitychange', async () => {
+                        if (document.visibilityState === 'visible' && tournamentStarted) {
+                            wakeLock = await navigator.wakeLock.request('screen');
+                        }
+                    });
+                }
+            } catch (err) {
+                console.error('Erro ao ativar Wake Lock:', err);
+            }
+        }
+        
+        // Liberar wake lock
+        async function releaseWakeLock() {
+            if (wakeLock !== null) {
+                await wakeLock.release();
+                wakeLock = null;
+                console.log('Wake Lock liberado');
+            }
+        }
+        
+        // Gerenciar instalação do PWA
+        function initPWA() {
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installButton.style.display = 'block';
+            });
+            
+            installButton.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        console.log('Usuário aceitou a instalação');
+                    }
+                    deferredPrompt = null;
+                    installButton.style.display = 'none';
+                }
+            });
+            
+            window.addEventListener('appinstalled', () => {
+                console.log('PWA foi instalado');
+                installButton.style.display = 'none';
+                deferredPrompt = null;
+            });
+        }
+        
+        // SISTEMA DE COMPRAS
+        
+        // Adicionar compra para um jogador específico
+        function addPurchaseForPlayer(player) {
+            const item = purchaseItemInput.value.trim();
+            const price = parseFloat(purchasePriceInput.value);
+            
+            if (!item || isNaN(price) || price <= 0) {
+                alert('Por favor, preencha o nome do item e um preço válido.');
+                return;
+            }
+            
+            saveCurrentStateToHistory();
+            
+            const newPurchase = {
+                id: Date.now(),
+                item,
+                price,
+                players: [player]
+            };
+            
+            purchases.push(newPurchase);
+            
+            purchaseItemInput.value = '';
+            purchasePriceInput.value = '';
+            
+            updatePurchasesList();
+            updatePurchasesSummary();
+            updatePurchasesSummaryResults();
+            saveToLocalStorage();
+        }
+        
+        // Atualizar lista de compras
+        function updatePurchasesList() {
+            purchasesList.innerHTML = '';
+            
+            if (purchases.length === 0) {
+                purchasesList.innerHTML = '<p>Nenhum item de compra registrado.</p>';
+                return;
+            }
+            
+            // Agrupar compras por jogador para facilitar a visualização
+            const purchasesByPlayer = {};
+            
+            purchases.forEach(purchase => {
+                purchase.players.forEach(player => {
+                    if (!purchasesByPlayer[player]) {
+                        purchasesByPlayer[player] = [];
+                    }
+                    purchasesByPlayer[player].push(purchase);
+                });
+            });
+            
+            // Criar cards por jogador
+            Object.keys(purchasesByPlayer).sort().forEach(player => {
+                const playerCard = document.createElement('div');
+                playerCard.className = 'purchase-item-card';
+                playerCard.style.marginBottom = '15px';
+                
+                const playerHeader = document.createElement('div');
+                playerHeader.className = 'purchase-header';
+                playerHeader.innerHTML = `<h3 style="margin: 0; color: #9c27b0;">${player}</h3>`;
+                playerCard.appendChild(playerHeader);
+                
+                const itemsList = document.createElement('div');
+                itemsList.className = 'purchase-items-list';
+                
+                purchasesByPlayer[player].forEach(purchase => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'purchase-item-row';
+                    itemDiv.style.display = 'flex';
+                    itemDiv.style.justifyContent = 'space-between';
+                    itemDiv.style.alignItems = 'center';
+                    itemDiv.style.padding = '6px';
+                    itemDiv.style.borderBottom = '1px solid #eee';
+                    
+                    const itemInfo = document.createElement('div');
+                    itemInfo.innerHTML = `
+                        <strong>${purchase.item}</strong> - R$ ${purchase.price.toFixed(2)}
+                    `;
+                    
+                    const itemActions = document.createElement('div');
+                    itemActions.className = 'purchase-item-actions';
+                    itemActions.style.display = 'flex';
+                    itemActions.style.gap = '4px';
+                    
+                    // Botão para adicionar mais uma unidade do mesmo item
+                    const addBtn = document.createElement('button');
+                    addBtn.className = 'btn-point-small';
+                    addBtn.innerHTML = '+1';
+                    addBtn.title = 'Adicionar mais uma unidade';
+                    addBtn.onclick = () => duplicatePurchaseItem(purchase.id, player);
+                    
+                    // Botão para remover uma unidade (com senha)
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'btn-error-small';
+                    removeBtn.innerHTML = '-1';
+                    removeBtn.title = 'Remover uma unidade';
+                    removeBtn.onclick = () => showPasswordDialogForPurchase('remove', purchase.id, player);
+                    
+                    // Botão para remover completamente o item
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'btn-remove-purchase-small';
+                    deleteBtn.innerHTML = '×';
+                    deleteBtn.title = 'Remover item completamente';
+                    deleteBtn.onclick = () => showPasswordDialogForPurchase('delete', purchase.id, player);
+                    
+                    itemActions.appendChild(addBtn);
+                    itemActions.appendChild(removeBtn);
+                    itemActions.appendChild(deleteBtn);
+                    
+                    itemDiv.appendChild(itemInfo);
+                    itemDiv.appendChild(itemActions);
+                    itemsList.appendChild(itemDiv);
+                });
+                
+                playerCard.appendChild(itemsList);
+                purchasesList.appendChild(playerCard);
+            });
+        }
+        
+        // Duplicar item de compra (adicionar +1 do mesmo item)
+        function duplicatePurchaseItem(purchaseId, player) {
+            saveCurrentStateToHistory();
+            
+            const originalPurchase = purchases.find(p => p.id === purchaseId);
+            if (originalPurchase) {
+                const newPurchase = {
+                    id: Date.now(),
+                    item: originalPurchase.item,
+                    price: originalPurchase.price,
+                    players: [player]
+                };
+                
+                purchases.push(newPurchase);
+                
+                updatePurchasesList();
+                updatePurchasesSummary();
+                updatePurchasesSummaryResults();
+                saveToLocalStorage();
+            }
+        }
+        
+        // Mostrar diálogo de senha para ações de compra
+        function showPasswordDialogForPurchase(action, purchaseId, player) {
+            currentAction = action;
+            currentPurchaseId = purchaseId;
+            currentPurchasePlayer = player;
+            
+            if (action === 'remove') {
+                dialogTitle.textContent = 'Remover Item';
+                dialogMessage.textContent = `Digite a senha para remover 1 unidade do item de ${player}:`;
+            } else if (action === 'delete') {
+                dialogTitle.textContent = 'Remover Item Completamente';
+                dialogMessage.textContent = `Digite a senha para remover completamente o item de ${player}:`;
+            }
+            
+            passwordDialog.style.display = 'block';
+            overlay.style.display = 'block';
+            passwordInput.value = '';
+            passwordInput.focus();
+        }
+        
+        // Remover item de compra (após confirmação de senha)
+        function removePurchaseItem(purchaseId, player) {
+            const purchaseIndex = purchases.findIndex(p => p.id === purchaseId && p.players.includes(player));
+            
+            if (purchaseIndex !== -1) {
+                purchases.splice(purchaseIndex, 1);
+                
+                updatePurchasesList();
+                updatePurchasesSummary();
+                updatePurchasesSummaryResults();
+                saveToLocalStorage();
+            }
+        }
+        
+        // Atualizar resumo de compras
+        function updatePurchasesSummary() {
+            purchasesSummary.innerHTML = '';
+            
+            if (purchases.length === 0) {
+                purchasesSummary.innerHTML = '<p>Nenhuma compra registrada.</p>';
+                return;
+            }
+            
+            const playerTotals = {};
+            const playerItems = {};
+            
+            purchases.forEach(purchase => {
+                purchase.players.forEach(player => {
+                    if (!playerTotals[player]) {
+                        playerTotals[player] = 0;
+                        playerItems[player] = {};
+                    }
+                    
+                    playerTotals[player] += purchase.price;
+                    
+                    if (!playerItems[player][purchase.item]) {
+                        playerItems[player][purchase.item] = {
+                            count: 0,
+                            price: purchase.price
+                        };
+                    }
+                    playerItems[player][purchase.item].count++;
+                });
+            });
+            
+            const sortedPlayers = Object.entries(playerTotals)
+                .sort((a, b) => b[1] - a[1])
+                .map(([player, total]) => ({ player, total, items: playerItems[player] }));
+            
+            sortedPlayers.forEach(({ player, total, items }) => {
+                const playerSection = document.createElement('div');
+                playerSection.className = 'player-purchase-section';
+                playerSection.style.marginBottom = '12px';
+                playerSection.style.padding = '8px';
+                playerSection.style.background = 'white';
+                playerSection.style.borderRadius = '4px';
+                
+                const playerHeader = document.createElement('div');
+                playerHeader.style.display = 'flex';
+                playerHeader.style.justifyContent = 'space-between';
+                playerHeader.style.marginBottom = '6px';
+                playerHeader.style.fontWeight = 'bold';
+                
+                playerHeader.innerHTML = `
+                    <span>${player}</span>
+                    <span class="total-amount">R$ ${total.toFixed(2)}</span>
+                `;
+                
+                playerSection.appendChild(playerHeader);
+                
+                const itemsList = document.createElement('div');
+                itemsList.style.fontSize = '0.85rem';
+                itemsList.style.color = '#666';
+                
+                Object.keys(items).forEach(itemName => {
+                    const itemInfo = items[itemName];
+                    const itemDiv = document.createElement('div');
+                    itemDiv.style.display = 'flex';
+                    itemDiv.style.justifyContent = 'space-between';
+                    itemDiv.style.marginBottom = '2px';
+                    
+                    itemDiv.innerHTML = `
+                        <span>${itemName} (${itemInfo.count}x)</span>
+                        <span>R$ ${(itemInfo.price * itemInfo.count).toFixed(2)}</span>
+                    `;
+                    
+                    itemsList.appendChild(itemDiv);
+                });
+                
+                playerSection.appendChild(itemsList);
+                purchasesSummary.appendChild(playerSection);
+            });
+            
+            const grandTotal = sortedPlayers.reduce((sum, { total }) => sum + total, 0);
+            
+            const grandTotalElement = document.createElement('div');
+            grandTotalElement.className = 'grand-total';
+            grandTotalElement.innerHTML = `
+                <span>TOTAL GERAL</span>
+                <span>R$ ${grandTotal.toFixed(2)}</span>
+            `;
+            purchasesSummary.appendChild(grandTotalElement);
+        }
+        
+        // Atualizar resumo de compras para a aba de resultados
+        function updatePurchasesSummaryResults() {
+            purchasesSummaryResults.innerHTML = '';
+            
+            if (purchases.length === 0) {
+                purchasesSummaryResults.innerHTML = '<p>Nenhuma compra registrada.</p>';
+                return;
+            }
+            
+            const playerTotals = {};
+            const playerItems = {};
+            
+            purchases.forEach(purchase => {
+                purchase.players.forEach(player => {
+                    if (!playerTotals[player]) {
+                        playerTotals[player] = 0;
+                        playerItems[player] = {};
+                    }
+                    
+                    playerTotals[player] += purchase.price;
+                    
+                    if (!playerItems[player][purchase.item]) {
+                        playerItems[player][purchase.item] = {
+                            count: 0,
+                            price: purchase.price
+                        };
+                    }
+                    playerItems[player][purchase.item].count++;
+                });
+            });
+            
+            const sortedPlayers = Object.entries(playerTotals)
+                .sort((a, b) => b[1] - a[1])
+                .map(([player, total]) => ({ player, total, items: playerItems[player] }));
+            
+            const table = document.createElement('table');
+            table.className = 'stats-table';
+            
+            const thead = document.createElement('thead');
+            thead.innerHTML = `
+                <tr>
+                    <th>Jogador</th>
+                    <th>Itens</th>
+                    <th>Total</th>
+                </tr>
+            `;
+            table.appendChild(thead);
+            
+            const tbody = document.createElement('tbody');
+            sortedPlayers.forEach(({ player, total, items }) => {
+                const row = document.createElement('tr');
+                
+                const itemsList = Object.keys(items).map(itemName => {
+                    const itemInfo = items[itemName];
+                    return `${itemName} (${itemInfo.count}x)`;
+                }).join(', ');
+                
+                row.innerHTML = `
+                    <td>${player}</td>
+                    <td style="font-size: 0.8rem;">${itemsList}</td>
+                    <td>R$ ${total.toFixed(2)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            const grandTotal = sortedPlayers.reduce((sum, { total }) => sum + total, 0);
+            
+            const grandTotalRow = document.createElement('tr');
+            grandTotalRow.style.fontWeight = 'bold';
+            grandTotalRow.style.background = '#f8f9fa';
+            grandTotalRow.innerHTML = `
+                <td colspan="2">TOTAL GERAL</td>
+                <td>R$ ${grandTotal.toFixed(2)}</td>
+            `;
+            tbody.appendChild(grandTotalRow);
+            
+            table.appendChild(tbody);
+            purchasesSummaryResults.appendChild(table);
+            
+            const pixInfo = document.createElement('div');
+            pixInfo.className = 'pix-info';
+            pixInfo.innerHTML = `
+                <h3>Pagamento via PIX</h3>
+                <p>Envie o valor total para:</p>
+                <div class="pix-email">peteca.pix@gmail.com</div>
+                <p class="confraternizacao-text">Verba arrecadada para confraternizações</p>
+            `;
+            purchasesSummaryResults.appendChild(pixInfo);
+        }
+        
+        // Compartilhar relatório de gastos
+        function sharePurchasesResults() {
+            const currentDate = new Date().toLocaleDateString('pt-BR');
+            
+            if (purchases.length === 0) {
+                alert('Nenhuma compra registrada para compartilhar.');
+                return;
+            }
+            
+            const playerTotals = {};
+            const playerItems = {};
+            
+            purchases.forEach(purchase => {
+                purchase.players.forEach(player => {
+                    if (!playerTotals[player]) {
+                        playerTotals[player] = 0;
+                        playerItems[player] = {};
+                    }
+                    
+                    playerTotals[player] += purchase.price;
+                    
+                    if (!playerItems[player][purchase.item]) {
+                        playerItems[player][purchase.item] = {
+                            count: 0,
+                            price: purchase.price
+                        };
+                    }
+                    playerItems[player][purchase.item].count++;
+                });
+            });
+            
+            const sortedPlayers = Object.entries(playerTotals)
+                .sort((a, b) => b[1] - a[1])
+                .map(([player, total]) => ({ player, total, items: playerItems[player] }));
+            
+            const grandTotal = sortedPlayers.reduce((sum, { total }) => sum + total, 0);
+            
+            let content = `🏸 *PETECANDO 2026 - RELATÓRIO DE GASTOS* 🏸\n\n`;
+            content += `📅 Data: ${currentDate}\n\n`;
+            content += `*RESUMO POR JOGADOR:*\n\n`;
+            
+            sortedPlayers.forEach(({ player, total, items }, index) => {
+                content += `*${index + 1}º - ${player}:* R$ ${total.toFixed(2)}\n`;
+                
+                Object.keys(items).forEach(itemName => {
+                    const itemInfo = items[itemName];
+                    content += `   ${itemName} (${itemInfo.count}x): R$ ${(itemInfo.price * itemInfo.count).toFixed(2)}\n`;
+                });
+                content += `\n`;
+            });
+            
+            content += `*TOTAL GERAL: R$ ${grandTotal.toFixed(2)}*\n\n`;
+            content += `💳 *PAGAMENTO VIA PIX:*\n`;
+            content += ` Chave PIX: peteca.pix@gmail.com\n\n`;
+            content += `_Verba arrecadada para confraternizações_\n\n`;
+            
+            content += `📱 Gerado pelo Petecando 2026\n`;
+            content += `👨‍💻 App by Hugo Ribeiro`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Petecando 2026 - Relatório de Gastos',
+                    text: content
+                }).catch(error => {
+                    console.log('Erro ao compartilhar:', error);
+                    copyToClipboard(content);
+                });
+            } else {
+                copyToClipboard(content);
+            }
+        }
+        
+        // Salvar estado atual no histórico
+        function saveCurrentStateToHistory() {
+            matchHistory.push({
+                players: [...players],
+                currentPlayers: [...currentPlayers],
+                waitingPlayers: [...waitingPlayers],
+                stats: JSON.parse(JSON.stringify(stats)),
+                teamStats: JSON.parse(JSON.stringify(teamStats)),
+                team1: [...team1],
+                team2: [...team2],
+                teamConsecutiveWins: {...teamConsecutiveWins},
+                exitOrder: [...exitOrder],
+                currentMatch: currentMatch,
+                tournamentTimeElapsed: tournamentTimeElapsed,
+                consecutiveWins: {...consecutiveWins},
+                coringaUsedInSorteio: [...coringaUsedInSorteio],
+                playerPoints: JSON.parse(JSON.stringify(playerPoints)),
+                playerErrors: JSON.parse(JSON.stringify(playerErrors)),
+                pointsHistory: [...pointsHistory],
+                currentMatchPoints: JSON.parse(JSON.stringify(currentMatchPoints)),
+                currentMatchErrors: JSON.parse(JSON.stringify(currentMatchErrors)),
+                teamScores: {...teamScores},
+                confrontosHistory: [...confrontosHistory],
+                purchases: JSON.parse(JSON.stringify(purchases))
+            });
+            
+            undoneActions = [];
+            updateNavigationButtons();
+        }
+        
+        // Atualizar dropdowns de troca de jogadores
+        function updateSwapDropdowns() {
+            swapPlayer1Select.innerHTML = '<option value="">Selecione o primeiro jogador</option>';
+            swapPlayer2Select.innerHTML = '<option value="">Selecione o segundo jogador</option>';
+            
+            players.forEach(player => {
+                if (!removedPlayers.includes(player)) {
+                    const option1 = document.createElement('option');
+                    option1.value = player;
+                    option1.textContent = player;
+                    
+                    const option2 = document.createElement('option');
+                    option2.value = player;
+                    option2.textContent = player;
+                    
+                    swapPlayer1Select.appendChild(option1);
+                    swapPlayer2Select.appendChild(option2);
+                }
+            });
+        }
+        
+        // Trocar jogadores de posição
+        function swapPlayers(player1, player2) {
+            if (player1 === player2) {
+                alert("Selecione jogadores diferentes para trocar.");
+                return;
+            }
+            
+            saveCurrentStateToHistory();
+            
+            const swapInArray = (arr, a, b) => {
+                const indexA = arr.indexOf(a);
+                const indexB = arr.indexOf(b);
+                
+                if (indexA !== -1 && indexB !== -1) {
+                    arr[indexA] = b;
+                    arr[indexB] = a;
+                } else if (indexA !== -1) {
+                    arr[indexA] = b;
+                } else if (indexB !== -1) {
+                    arr[indexB] = a;
+                }
+            };
+            
+            swapInArray(players, player1, player2);
+            swapInArray(currentPlayers, player1, player2);
+            swapInArray(waitingPlayers, player1, player2);
+            swapInArray(exitOrder, player1, player2);
+            swapInArray(team1, player1, player2);
+            swapInArray(team2, player1, player2);
+            
+            updatePlayersList();
+            updateDisplay();
+            updateModernStats();
+            updateConfrontosStats();
+            updateSwapDropdowns();
+            updatePurchasePlayersButtons();
+            saveToLocalStorage();
+            
+            alert(`Jogadores ${player1} e ${player2} trocados com sucesso!`);
+        }
+        
+        // Atualizar status do torneio
+        function updateTournamentStatus() {
+            if (tournamentStarted) {
+                tournamentStatus.textContent = `Torneio em andamento - Partida ${currentMatch}`;
+                tournamentStatus.className = 'tournament-status status-playing';
+                tournamentStatus.style.display = 'block';
+            } else {
+                tournamentStatus.textContent = 'Torneio não iniciado';
+                tournamentStatus.className = 'tournament-status status-waiting';
+                tournamentStatus.style.display = 'none';
+                clearInterval(tournamentTimer);
+            }
+            
+            currentMatchTitle.textContent = `Partida - ${currentMatch}`;
+        }
+        
+        // Atualizar botões de navegação
+        function updateNavigationButtons() {
+            backButton.style.display = matchHistory.length > 0 ? 'block' : 'none';
+            forwardButton.style.display = undoneActions.length > 0 ? 'block' : 'none';
+        }
+        
+        // Alternar instruções
+        function toggleInstructions() {
+            instructionsContent.style.display = instructionsContent.style.display === 'block' ? 'none' : 'block';
+            toggleIcon.classList.toggle('rotated');
+        }
+        
+        // Permitir adicionar jogadores pressionando Enter
+        playerNameInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addPlayer();
+            }
+        });
+        
+        // Permitir adicionar compras pressionando Enter no campo de preço
+        purchasePriceInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                if (purchaseItemInput.value.trim() && purchasePriceInput.value) {
+                    // Se houver um jogador selecionado, adicionar para ele
+                    const selectedPlayerBtn = document.querySelector('.player-purchase-btn.selected');
+                    if (selectedPlayerBtn) {
+                        addPurchaseForPlayer(selectedPlayerBtn.textContent);
+                    } else {
+                        alert('Selecione um jogador clicando no botão com o nome dele.');
+                    }
+                }
+            }
+        });
+        
+        // Salvar automaticamente quando a página for fechada
+        window.addEventListener('beforeunload', function() {
+            saveToLocalStorage();
+        });
+        
+        // Salvar automaticamente periodicamente (a cada 30 segundos)
+        setInterval(function() {
+            if (tournamentStarted || players.length > 0) {
+                saveToLocalStorage();
+            }
+        }, 30000);
+        
+        // Inicializar a exibição e carregar dados salvos
+        window.onload = function() {
+            loadFromLocalStorage();
+            updateDisplay();
+            updateModernStats();
+            updateConfrontosStats();
+            updatePointsStats();
+            updateTournamentStatus();
+            updateSwapDropdowns();
+            updateNavigationButtons();
+            updatePurchasesList();
+            updatePurchasesSummary();
+            updatePurchasesSummaryResults();
+            updatePurchasePlayersButtons();
+            initTabs();
+            initPWA();
+            
+            if (tournamentStarted) {
+                requestWakeLock();
+            }
+            
+            // Salvar imediatamente após carregar para garantir backup
+            setTimeout(function() {
+                saveToLocalStorage();
+            }, 1000);
+        };
+    </script>
+
+    <script>
+        // Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js').then(function(registration) {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
