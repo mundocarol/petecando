@@ -361,12 +361,6 @@
             align-items: center;
         }
         
-        .instructions-toggle h3 {
-            color: #ffa502;
-            margin: 0;
-            font-size: 0.9rem;
-        }
-        
         .instructions-content {
             display: none;
             background: #fff4e6;
@@ -785,17 +779,6 @@
             background: #7b1fa2;
         }
         
-        .btn-sorteio {
-            background: #9c27b0;
-            margin-top: 6px;
-            width: 100%;
-            font-size: 0.8rem;
-        }
-        
-        .btn-sorteio:hover {
-            background: #7b1fa2;
-        }
-        
         .consecutive-individual {
             position: absolute;
             top: 4px;
@@ -810,11 +793,6 @@
             align-items: center;
             justify-content: center;
             font-weight: bold;
-        }
-        
-        .player-coringa {
-            background-color: #ffeb3b !important;
-            border: 1px solid #ffc107;
         }
         
         .points-stats-panel {
@@ -877,13 +855,6 @@
             font-weight: bold;
             color: #2575fc;
             font-size: 0.85rem;
-        }
-        
-        .coringa-substitute {
-            font-size: 0.75rem;
-            color: #9c27b0;
-            font-style: italic;
-            margin-left: 4px;
         }
         
         .simple-dialog {
@@ -1188,7 +1159,6 @@
             }
         }
         
-        /* Estilo para jogador - número de jogos e vitórias consecutivas */
         .player-name-with-games {
             display: flex;
             align-items: center;
@@ -1202,7 +1172,6 @@
             font-size: 0.85rem;
         }
         
-        /* Estilo para nome do jogador com número de jogos inline */
         .player-name-inline {
             display: inline;
             font-size: 0.85rem;
@@ -1232,7 +1201,6 @@
             color: #999;
         }
         
-        /* Ajustes para dispositivos móveis muito pequenos */
         @media (max-width: 360px) {
             body {
                 padding: 5px;
@@ -1256,6 +1224,113 @@
                 padding: 6px;
                 font-size: 0.8rem;
             }
+        }
+        
+        .next-players-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-top: 8px;
+        }
+        
+        .next-player-item {
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .show-full-queue-btn {
+            background: #6c757d;
+            width: 100%;
+            margin-top: 8px;
+        }
+        
+        .show-full-queue-btn:hover {
+            background: #5a6268;
+        }
+        
+        .full-queue-dialog {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            width: 300px;
+            max-width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .full-queue-dialog h3 {
+            color: #2575fc;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+        
+        .full-queue-list {
+            list-style: none;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 8px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            padding: 6px;
+        }
+        
+        .full-queue-list li {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .full-queue-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .queue-position {
+            font-weight: bold;
+            color: #2575fc;
+            min-width: 30px;
+        }
+        
+        .btn-close-queue {
+            background: #6c757d;
+            margin-top: 12px;
+            width: 100%;
+        }
+        
+        .btn-close-queue:hover {
+            background: #5a6268;
+        }
+        
+        .share-image-container {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .share-image-title {
+            text-align: center;
+            color: #2575fc;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .share-image-content {
+            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -1287,7 +1362,6 @@
                         <input type="text" id="playerName" placeholder="Nome do jogador">
                         <button class="btn-add" onclick="addPlayer()">Adicionar</button>
                     </div>
-                    <button class="btn-add" onclick="addCoringa()" style="margin-bottom: 8px; background: #9c27b0;">Adicionar CORINGA</button>
                     <ul id="playersList" class="player-list"></ul>
                     
                     <button id="startTournamentBtn" class="btn-start" onclick="startTournament()" disabled>Iniciar Torneio</button>
@@ -1342,7 +1416,6 @@
                             </div>
                             <div id="team1Wins" class="consecutive-wins"></div>
                             <button class="btn-victory" onclick="confirmVictory(1)">Dupla 1 Venceu</button>
-                            <button id="sorteioTeam1" class="btn-sorteio" onclick="realizarSorteio(1)" style="display: none;">Sorteio CORINGA</button>
                         </div>
                         
                         <div class="team">
@@ -1358,7 +1431,6 @@
                             </div>
                             <div id="team2Wins" class="consecutive-wins"></div>
                             <button class="btn-victory" onclick="confirmVictory(2)">Dupla 2 Venceu</button>
-                            <button id="sorteioTeam2" class="btn-sorteio" onclick="realizarSorteio(2)" style="display: none;">Sorteio CORINGA</button>
                         </div>
                     </div>
                     
@@ -1366,7 +1438,10 @@
                         <div class="waiting-header">
                             <h3>Próximos da Fila</h3>
                         </div>
-                        <div id="waitingPlayers">Nenhum jogador na espera</div>
+                        <div id="nextPlayers" class="next-players-list">
+                            <!-- Apenas 2 próximos jogadores serão mostrados aqui -->
+                        </div>
+                        <button class="show-full-queue-btn" onclick="showFullQueueDialog()">Ver Fila Completa</button>
                     </div>
                 </div>
             </div>
@@ -1374,12 +1449,14 @@
         
         <!-- Conteúdo da Aba 3 - Resultados -->
         <div id="results-tab" class="tab-content">
+            <div id="shareImageContainer" class="share-image-container"></div>
+            
             <div class="panel">
                 <h2>Relatório de Gastos</h2>
                 <div id="purchasesSummaryResults">
                     <!-- O relatório de gastos será inserido aqui via JavaScript -->
                 </div>
-                <button class="btn-share" onclick="sharePurchasesResults()">Compartilhar Relatório de Gastos</button>
+                <button class="btn-share" onclick="sharePurchasesAsImage()">Compartilhar Relatório de Gastos (Imagem)</button>
             </div>
             
             <div class="panel">
@@ -1387,7 +1464,7 @@
                 <div id="modernStats">
                     <!-- As estatísticas modernas serão inseridas aqui via JavaScript -->
                 </div>
-                <button class="btn-share" onclick="shareResults()">Compartilhar Resultados</button>
+                <button class="btn-share" onclick="shareStatsAsImage()">Compartilhar Estatísticas (Imagem)</button>
             </div>
             
             <div class="panel points-stats-panel">
@@ -1395,7 +1472,7 @@
                 <div id="pointsStats">
                     <!-- As estatísticas de pontos serão inseridas aqui via JavaScript -->
                 </div>
-                <button class="btn-share" onclick="sharePointsResults()">Compartilhar Estatísticas de Pontos</button>
+                <button class="btn-share" onclick="sharePointsAsImage()">Compartilhar Estatísticas de Pontos (Imagem)</button>
             </div>
             
             <div class="panel team-stats-panel">
@@ -1403,7 +1480,7 @@
                 <div id="confrontosStats">
                     <!-- O relatório de confrontos será inserido aqui via JavaScript -->
                 </div>
-                <button class="btn-share" onclick="shareConfrontosResults()">Compartilhar Relatório de Confrontos</button>
+                <button class="btn-share" onclick="shareConfrontosResults()">Compartilhar Relatório de Confrontos (Texto)</button>
             </div>
             
             <div class="panel">
@@ -1425,14 +1502,15 @@
                     <li>Clique em "Iniciar Torneio" para começar a partida</li>
                     <li>Clique em "Dupla X Venceu" para registrar o resultado</li>
                     <li>Se uma dupla vencer 3 vezes seguidas, os jogadores serão redistribuídos</li>
+                    <li>Jogador com 5 vitórias seguidas tem descanso obrigatório</li>
                     <li>Você pode adicionar ou remover jogadores mesmo durante o torneio</li>
                     <li>Agora você pode trocar jogadores de posição usando o sistema de troca</li>
                     <li>Acompanhe as estatísticas na tabela e compartilhe os resultados</li>
-                    <li>Adicione o CORINGA para sortear jogadores da fila de espera</li>
-                    <li>Jogadores com 4 vitórias consecutivas serão substituídos automaticamente</li>
                     <li>Use o botão "Acertou X" para marcar pontos durante a partida</li>
                     <li>Use o botão "+ Erro do Adversário" para marcar pontos quando a outra dupla erra</li>
                     <li>Na aba "Compras" registre itens vendidos aos jogadores</li>
+                    <li>A fila de espera mostra apenas os 2 próximos jogadores</li>
+                    <li>Clique em "Ver Fila Completa" para ver todos os jogadores na espera</li>
                 </ol>
             </div>
         </div>
@@ -1474,7 +1552,10 @@
 
     <button id="installButton" title="Instalar App">+</button>
 
+    <!-- Overlay para diálogos -->
     <div class="overlay" id="overlay"></div>
+    
+    <!-- Diálogo de Senha -->
     <div class="password-dialog" id="passwordDialog">
         <h3 id="dialogTitle">Reiniciar Torneio</h3>
         <p id="dialogMessage">Digite a senha para reiniciar:</p>
@@ -1483,6 +1564,7 @@
         <button onclick="hidePasswordDialog()" style="background: #ff4757;">Cancelar</button>
     </div>
 
+    <!-- Diálogo de Remover Jogador -->
     <div class="password-dialog" id="removePlayerDialog">
         <h3>Remover Jogador</h3>
         <p>Digite a senha para remover <span id="playerToRemove"></span>:</p>
@@ -1491,6 +1573,7 @@
         <button onclick="hideRemovePlayerDialog()" style="background: #ff4757;">Cancelar</button>
     </div>
     
+    <!-- Diálogo de Vitória -->
     <div class="victory-dialog" id="victoryDialog">
         <h3 id="victoryDialogTitle">Confirmar Vitória</h3>
         <p id="victoryDialogMessage">A Dupla 1 venceu a partida?</p>
@@ -1500,6 +1583,7 @@
         </div>
     </div>
     
+    <!-- Diálogo Simples -->
     <div class="simple-dialog" id="simpleDialog">
         <h3 id="simpleDialogTitle">Confirmar Troca</h3>
         <p id="simpleDialogMessage">Tem certeza que deseja trocar os jogadores?</p>
@@ -1507,6 +1591,15 @@
             <button class="btn-cancel" onclick="hideSimpleDialog()">Cancelar</button>
             <button class="btn-confirm" onclick="confirmSimpleAction()">Confirmar</button>
         </div>
+    </div>
+    
+    <!-- Diálogo da Fila Completa -->
+    <div class="full-queue-dialog" id="fullQueueDialog">
+        <h3>Fila de Espera Completa</h3>
+        <ul id="fullQueueList" class="full-queue-list">
+            <!-- Lista completa será inserida aqui -->
+        </ul>
+        <button class="btn-close-queue" onclick="hideFullQueueDialog()">Fechar</button>
     </div>
 
     <script>
@@ -1533,11 +1626,10 @@
         let wakeLock = null;
         let pendingVictoryTeam = 0;
         
-        // Novas variáveis para funcionalidades do CORINGA
-        let coringaUsedInSorteio = [];
+        // Novas variáveis para funcionalidades
         let consecutiveWins = {};
         
-        // Novas variáveis para sistema de pontos
+        // Variáveis para sistema de pontos
         let playerPoints = {};
         let playerErrors = {};
         let pointsHistory = [];
@@ -1546,10 +1638,10 @@
         let teamScores = { team1: 0, team2: 0 };
         let undoneActions = [];
         
-        // Nova variável para histórico de confrontos
+        // Variável para histórico de confrontos
         let confrontosHistory = [];
         
-        // Nova variável para sistema de compras
+        // Variável para sistema de compras
         let purchases = [];
         let currentPurchaseId = null;
         let currentPurchasePlayer = null;
@@ -1564,7 +1656,7 @@
         const team2ScoreElement = document.getElementById('team2Score');
         const team1WinsElement = document.getElementById('team1Wins');
         const team2WinsElement = document.getElementById('team2Wins');
-        const waitingPlayersElement = document.getElementById('waitingPlayers');
+        const nextPlayersElement = document.getElementById('nextPlayers');
         const modernStatsElement = document.getElementById('modernStats');
         const teamStatsElement = document.getElementById('confrontosStats');
         const pointsStatsElement = document.getElementById('pointsStats');
@@ -1573,6 +1665,8 @@
         const removePlayerDialog = document.getElementById('removePlayerDialog');
         const victoryDialog = document.getElementById('victoryDialog');
         const simpleDialog = document.getElementById('simpleDialog');
+        const fullQueueDialog = document.getElementById('fullQueueDialog');
+        const fullQueueList = document.getElementById('fullQueueList');
         const overlay = document.getElementById('overlay');
         const passwordInput = document.getElementById('passwordInput');
         const removePasswordInput = document.getElementById('removePasswordInput');
@@ -1594,14 +1688,18 @@
         const swapPlayer2Select = document.getElementById('swapPlayer2');
         const installButton = document.getElementById('installButton');
         const mainHeader = document.getElementById('mainHeader');
-        const sorteioTeam1Button = document.getElementById('sorteioTeam1');
-        const sorteioTeam2Button = document.getElementById('sorteioTeam2');
         const purchasesList = document.getElementById('purchasesList');
         const purchasesSummary = document.getElementById('purchasesSummary');
         const purchasesSummaryResults = document.getElementById('purchasesSummaryResults');
         const purchaseItemInput = document.getElementById('purchaseItem');
         const purchasePriceInput = document.getElementById('purchasePrice');
         const purchasePlayersButtons = document.getElementById('purchasePlayersButtons');
+        const shareImageContainer = document.getElementById('shareImageContainer');
+        
+        // CONSTANTES DO SISTEMA
+        const MAX_CONSECUTIVE_INDIVIDUAL_WINS = 5; // Mudado de 4 para 5
+        const TEAM_CONSECUTIVE_WINS_TO_BREAK = 3;
+        const MIN_MATCHES_BETWEEN_SAME_TEAM = 1; // Apenas 1 partida sem repetir
         
         // Sistema de abas
         function initTabs() {
@@ -1654,6 +1752,7 @@
             // Atualizar resumo de compras se for a aba de resultados
             if (tabId === 'results') {
                 updatePurchasesSummaryResults();
+                shareImageContainer.style.display = 'none';
             }
             
             // Atualizar botões de jogadores na aba de compras
@@ -1662,32 +1761,22 @@
             }
         }
         
-        // Restaurar aba ativa
-        function restoreActiveTab() {
-            const savedTab = localStorage.getItem('currentTab');
-            if (savedTab) {
-                switchTab(savedTab);
-            }
-        }
-        
         // Atualizar botões de jogadores na aba de compras
         function updatePurchasePlayersButtons() {
             purchasePlayersButtons.innerHTML = '';
             
             players.forEach(player => {
-                if (!player.includes("CORINGA")) {
-                    const playerBtn = document.createElement('button');
-                    playerBtn.className = 'player-purchase-btn';
-                    playerBtn.textContent = player;
-                    playerBtn.onclick = () => {
-                        if (purchaseItemInput.value.trim() && purchasePriceInput.value) {
-                            addPurchaseForPlayer(player);
-                        } else {
-                            alert('Preencha o nome do item e o preço primeiro.');
-                        }
-                    };
-                    purchasePlayersButtons.appendChild(playerBtn);
-                }
+                const playerBtn = document.createElement('button');
+                playerBtn.className = 'player-purchase-btn';
+                playerBtn.textContent = player;
+                playerBtn.onclick = () => {
+                    if (purchaseItemInput.value.trim() && purchasePriceInput.value) {
+                        addPurchaseForPlayer(player);
+                    } else {
+                        alert('Preencha o nome do item e o preço primeiro.');
+                    }
+                };
+                purchasePlayersButtons.appendChild(playerBtn);
             });
         }
         
@@ -1712,7 +1801,6 @@
                     tournamentTimeElapsed = data.tournamentTimeElapsed || 0;
                     matchHistory = data.matchHistory || [];
                     consecutiveWins = data.consecutiveWins || {};
-                    coringaUsedInSorteio = data.coringaUsedInSorteio || [];
                     playerPoints = data.playerPoints || {};
                     playerErrors = data.playerErrors || {};
                     pointsHistory = data.pointsHistory || [];
@@ -1736,15 +1824,15 @@
                     updatePurchasesSummary();
                     updatePurchasesSummaryResults();
                     updatePurchasePlayersButtons();
+                    updateNextPlayers();
                 }
             } catch (error) {
                 console.error('Erro ao carregar dados do localStorage:', error);
-                // Se houver erro, inicie com dados vazios
                 resetToDefaultState();
             }
         }
         
-        // Salvar dados no localStorage com múltiplas tentativas
+        // Salvar dados no localStorage
         function saveToLocalStorage() {
             const data = {
                 players,
@@ -1762,7 +1850,6 @@
                 tournamentTimeElapsed,
                 matchHistory,
                 consecutiveWins,
-                coringaUsedInSorteio,
                 playerPoints,
                 playerErrors,
                 pointsHistory,
@@ -1776,56 +1863,9 @@
             
             try {
                 localStorage.setItem('petecaTournament', JSON.stringify(data));
-                
-                // Salvar também em sessionStorage como backup
-                sessionStorage.setItem('petecaTournamentBackup', JSON.stringify(data));
-                
-                // Salvar em cookies como backup adicional (para Google Sites)
-                document.cookie = `petecaTournament=${encodeURIComponent(JSON.stringify(data))}; max-age=${60*60*24*7}; path=/; samesite=strict`;
-                
-                console.log('Dados salvos com sucesso no localStorage');
             } catch (error) {
                 console.error('Erro ao salvar no localStorage:', error);
-                
-                // Tentar salvar em sessionStorage como fallback
-                try {
-                    sessionStorage.setItem('petecaTournamentBackup', JSON.stringify(data));
-                    console.log('Dados salvos no sessionStorage como backup');
-                } catch (e) {
-                    console.error('Erro ao salvar no sessionStorage:', e);
-                }
             }
-        }
-        
-        // Carregar dados de múltiplas fontes
-        function loadDataFromMultipleSources() {
-            try {
-                // Tentar carregar do localStorage primeiro
-                const savedData = localStorage.getItem('petecaTournament');
-                if (savedData) {
-                    return JSON.parse(savedData);
-                }
-                
-                // Tentar carregar do sessionStorage como backup
-                const backupData = sessionStorage.getItem('petecaTournamentBackup');
-                if (backupData) {
-                    return JSON.parse(backupData);
-                }
-                
-                // Tentar carregar de cookies (útil para Google Sites)
-                const cookies = document.cookie.split(';');
-                for (let cookie of cookies) {
-                    cookie = cookie.trim();
-                    if (cookie.startsWith('petecaTournament=')) {
-                        const cookieValue = decodeURIComponent(cookie.substring('petecaTournament='.length));
-                        return JSON.parse(cookieValue);
-                    }
-                }
-            } catch (error) {
-                console.error('Erro ao carregar dados de múltiplas fontes:', error);
-            }
-            
-            return null;
         }
         
         // Resetar para estado padrão
@@ -1845,7 +1885,6 @@
             tournamentTimeElapsed = 0;
             matchHistory = [];
             consecutiveWins = {};
-            coringaUsedInSorteio = [];
             playerPoints = {};
             playerErrors = {};
             pointsHistory = [];
@@ -1859,59 +1898,11 @@
         
         // Atualizar estado do botão de iniciar torneio
         function updateStartButton() {
-            const regularPlayers = players.filter(p => !p.includes("CORINGA"));
+            const regularPlayers = players.filter(p => !removedPlayers.includes(p));
             if (regularPlayers.length >= 4 && !tournamentStarted) {
                 startTournamentBtn.disabled = false;
             } else {
                 startTournamentBtn.disabled = true;
-            }
-        }
-        
-        // Contar quantos CORINGAs já existem
-        function countCoringas() {
-            return players.filter(p => p.includes("CORINGA")).length;
-        }
-        
-        // Adicionar jogador CORINGA
-        function addCoringa() {
-            if (countCoringas() >= 3) {
-                alert('Já existem 3 CORINGAs no torneio. Não é possível adicionar mais.');
-                return;
-            }
-            
-            let coringaNumber = 1;
-            let coringaName = "CORINGA";
-            
-            while (players.includes(coringaName)) {
-                coringaNumber++;
-                coringaName = `CORINGA ${coringaNumber}`;
-            }
-            
-            if (!players.includes(coringaName)) {
-                players.push(coringaName);
-                
-                if (tournamentStarted) {
-                    waitingPlayers.push(coringaName);
-                    updateExitOrder();
-                }
-                
-                stats[coringaName] = { wins: 0, losses: 0, matches: 0 };
-                consecutiveWins[coringaName] = 0;
-                
-                updatePlayersList();
-                updateStartButton();
-                updateDisplay();
-                updateModernStats();
-                updateConfrontosStats();
-                updateSwapDropdowns();
-                updatePurchasePlayersButtons();
-                saveToLocalStorage();
-                
-                if (tournamentStarted) {
-                    alert(`Jogador ${coringaName} adicionado à fila de espera!`);
-                }
-            } else {
-                alert('CORINGA já foi adicionado.');
             }
         }
         
@@ -1922,6 +1913,7 @@
                 players.push(name);
                 
                 if (tournamentStarted) {
+                    // Se o torneio já começou, o jogador vai para o final da fila
                     waitingPlayers.push(name);
                     updateExitOrder();
                 }
@@ -1940,6 +1932,7 @@
                 updateConfrontosStats();
                 updateSwapDropdowns();
                 updatePurchasePlayersButtons();
+                updateNextPlayers();
                 playerNameInput.value = '';
                 playerNameInput.focus();
                 saveToLocalStorage();
@@ -1954,9 +1947,9 @@
         
         // Iniciar torneio
         function startTournament() {
-            const regularPlayers = players.filter(p => !p.includes("CORINGA"));
+            const regularPlayers = players.filter(p => !removedPlayers.includes(p));
             if (regularPlayers.length < 4) {
-                alert('É necessário pelo menos 4 jogadores regulares (não CORINGAs) para iniciar o torneio.');
+                alert('É necessário pelo menos 4 jogadores para iniciar o torneio.');
                 return;
             }
             
@@ -1967,38 +1960,28 @@
             
             requestWakeLock();
             
-            const shuffledPlayers = [...players].sort(() => Math.random() - 0.5);
+            // Embaralha os jogadores
+            const shuffledPlayers = [...regularPlayers].sort(() => Math.random() - 0.5);
             
-            currentPlayers = shuffledPlayers.slice(0, Math.min(4, shuffledPlayers.length));
+            // Os primeiros 4 jogam
+            currentPlayers = shuffledPlayers.slice(0, 4);
             
-            waitingPlayers = shuffledPlayers.slice(Math.min(4, shuffledPlayers.length));
+            // O resto vai para a fila
+            waitingPlayers = shuffledPlayers.slice(4);
             
-            if (currentPlayers.length >= 2) {
-                team1 = currentPlayers.slice(0, 2);
-            }
-            
-            if (currentPlayers.length >= 4) {
-                team2 = currentPlayers.slice(2, 4);
-            }
+            // Forma as duplas
+            team1 = currentPlayers.slice(0, 2);
+            team2 = currentPlayers.slice(2, 4);
             
             updateExitOrder();
             
-            players.forEach(player => {
-                if (!consecutiveWins[player]) {
-                    consecutiveWins[player] = 0;
-                }
-                if (!playerPoints[player]) {
-                    playerPoints[player] = 0;
-                }
-                if (!playerErrors[player]) {
-                    playerErrors[player] = 0;
-                }
-                if (!currentMatchPoints[player]) {
-                    currentMatchPoints[player] = 0;
-                }
-                if (!currentMatchErrors[player]) {
-                    currentMatchErrors[player] = 0;
-                }
+            // Inicializa estatísticas
+            regularPlayers.forEach(player => {
+                if (!consecutiveWins[player]) consecutiveWins[player] = 0;
+                if (!playerPoints[player]) playerPoints[player] = 0;
+                if (!playerErrors[player]) playerErrors[player] = 0;
+                if (!currentMatchPoints[player]) currentMatchPoints[player] = 0;
+                if (!currentMatchErrors[player]) currentMatchErrors[player] = 0;
             });
             
             teamScores = { team1: 0, team2: 0 };
@@ -2007,16 +1990,16 @@
             
             updateDisplay();
             updateSwapDropdowns();
+            updateNextPlayers();
             saveToLocalStorage();
         }
         
-        // Atualizar lista de jogadores (com número de jogos e vitórias consecutivas formatado inline)
+        // Atualizar lista de jogadores
         function updatePlayersList() {
             playersList.innerHTML = '';
             players.forEach(player => {
                 const li = document.createElement('li');
                 
-                const isCoringa = player.includes("CORINGA");
                 const playerStats = stats[player] || { matches: 0 };
                 const gamesCount = playerStats.matches || 0;
                 const playerConsecutiveWins = consecutiveWins[player] || 0;
@@ -2024,7 +2007,7 @@
                 li.innerHTML = `
                     <div class="player-name-with-games">
                         <span class="player-name-inline">
-                            ${isCoringa ? '<span style="color: #9c27b0; font-weight: bold;">' + player + '</span>' : player}
+                            ${player}
                         </span>
                         <span class="player-games-separator">-</span>
                         <span class="player-games-inline">${gamesCount}</span>
@@ -2107,9 +2090,9 @@
                 consecutiveWins[playerName] = 0;
             }
             
-            const regularPlayers = players.filter(p => !p.includes("CORINGA"));
+            const regularPlayers = players.filter(p => !removedPlayers.includes(p));
             if (regularPlayers.length < 4 && tournamentStarted) {
-                if (confirm('Não há jogadores regulares suficientes para continuar o torneio. Deseja parar o torneio?')) {
+                if (confirm('Não há jogadores suficientes para continuar o torneio. Deseja parar o torneio?')) {
                     tournamentStarted = false;
                     resetGameData();
                 }
@@ -2125,6 +2108,7 @@
             updatePointsStats();
             updateSwapDropdowns();
             updatePurchasePlayersButtons();
+            updateNextPlayers();
             saveToLocalStorage();
             
             if (tournamentStarted) {
@@ -2132,7 +2116,7 @@
             }
         }
         
-        // Resetar dados do jogo (sem remover jogadores)
+        // Resetar dados do jogo
         function resetGameData() {
             currentPlayers = [];
             waitingPlayers = [];
@@ -2147,7 +2131,6 @@
             tournamentTimeElapsed = 0;
             teamStats = {};
             consecutiveWins = {};
-            coringaUsedInSorteio = [];
             playerPoints = {};
             playerErrors = {};
             pointsHistory = [];
@@ -2241,6 +2224,7 @@
                 teamConsecutiveWins.team1 = 0;
             }
             
+            // Registrar confronto
             confrontosHistory.push({
                 match: currentMatch,
                 team1: [...team1],
@@ -2249,35 +2233,46 @@
                 score: `${teamScores.team1} x ${teamScores.team2}`
             });
             
+            // Atualizar estatísticas dos vencedores
             winners.forEach(player => {
                 stats[player].wins++;
                 stats[player].matches++;
                 consecutiveWins[player]++;
                 
-                // Mudado de 6 para 4 vitórias consecutivas
-                if (consecutiveWins[player] >= 4 && waitingPlayers.length > 0) {
-                    const replacement = waitingPlayers.shift();
-                    
+                // Verificar se jogador tem 5 vitórias consecutivas
+                if (consecutiveWins[player] >= MAX_CONSECUTIVE_INDIVIDUAL_WINS) {
+                    // Descanso obrigatório
                     if (team1.includes(player)) {
-                        team1 = team1.map(p => p === player ? replacement : p);
+                        // Substituir jogador na equipe 1
+                        if (waitingPlayers.length > 0) {
+                            const replacement = waitingPlayers.shift();
+                            team1 = team1.map(p => p === player ? replacement : p);
+                            waitingPlayers.push(player);
+                            alert(`${player} atingiu 5 vitórias consecutivas! Descanso obrigatório. Substituído por ${replacement}.`);
+                        }
                     } else if (team2.includes(player)) {
-                        team2 = team2.map(p => p === player ? replacement : p);
+                        // Substituir jogador na equipe 2
+                        if (waitingPlayers.length > 0) {
+                            const replacement = waitingPlayers.shift();
+                            team2 = team2.map(p => p === player ? replacement : p);
+                            waitingPlayers.push(player);
+                            alert(`${player} atingiu 5 vitórias consecutivas! Descanso obrigatório. Substituído por ${replacement}.`);
+                        }
                     }
                     
-                    waitingPlayers.push(player);
-                    
+                    // Zerar contador de vitórias consecutivas
                     consecutiveWins[player] = 0;
-                    
-                    alert(`${player} atingiu 4 vitórias consecutivas e foi substituído por ${replacement}!`);
                 }
             });
             
+            // Atualizar estatísticas dos perdedores
             losers.forEach(player => {
                 stats[player].losses++;
                 stats[player].matches++;
                 consecutiveWins[player] = 0; // Zerar vitórias consecutivas ao perder
             });
             
+            // Atualizar estatísticas de equipes
             if (!teamStats[winningTeamKey]) {
                 teamStats[winningTeamKey] = { wins: 0, losses: 0, matches: 0, players: winners };
             }
@@ -2293,47 +2288,35 @@
             currentMatch++;
             updateTournamentStatus();
             
-            if (teamConsecutiveWins.team1 >= 3 || teamConsecutiveWins.team2 >= 3) {
-                const winningTeamId = teamConsecutiveWins.team1 >= 3 ? 1 : 2;
-                const winningTeam = winningTeamId === 1 ? team1 : team2;
-                const losingTeam = winningTeamId === 1 ? team2 : team1;
+            // Verificar se dupla vencedora tem 3 vitórias consecutivas
+            if (teamConsecutiveWins.team1 >= TEAM_CONSECUTIVE_WINS_TO_BREAK || 
+                teamConsecutiveWins.team2 >= TEAM_CONSECUTIVE_WINS_TO_BREAK) {
+                
+                const winningTeamIdBreak = teamConsecutiveWins.team1 >= TEAM_CONSECUTIVE_WINS_TO_BREAK ? 1 : 2;
+                const winningTeamBreak = winningTeamIdBreak === 1 ? team1 : team2;
                 
                 consecutiveInfo.style.display = 'block';
-                consecutiveInfo.textContent = `Dupla ${winningTeamId} com 3 vitórias consecutivas! Os jogadores serão redistribuídos.`;
+                consecutiveInfo.textContent = `Dupla ${winningTeamIdBreak} com 3 vitórias consecutivas! Os jogadores serão redistribuídos.`;
                 
-                losingTeam.forEach(player => {
-                    if (!waitingPlayers.includes(player)) {
-                        waitingPlayers.push(player);
-                    }
-                });
+                // Desmembrar a dupla vencedora
+                const [winner1, winner2] = winningTeamBreak;
                 
-                if (winningTeamId === 1) {
-                    const [winner1, winner2] = winningTeam;
-                    
-                    if (waitingPlayers.length > 0) {
+                // Cada vencedor forma nova dupla com alguém da fila
+                if (waitingPlayers.length >= 2) {
+                    if (winningTeamIdBreak === 1) {
                         team1 = [winner1, waitingPlayers.shift()];
-                    } else {
-                        team1 = [winner1];
-                    }
-                    
-                    if (waitingPlayers.length > 0) {
                         team2 = [winner2, waitingPlayers.shift()];
                     } else {
-                        team2 = [winner2];
-                    }
-                } else {
-                    const [winner1, winner2] = winningTeam;
-                    
-                    if (waitingPlayers.length > 0) {
                         team1 = [winner1, waitingPlayers.shift()];
+                        team2 = [winner2, waitingPlayers.shift()];
+                    }
+                } else if (waitingPlayers.length === 1) {
+                    if (winningTeamIdBreak === 1) {
+                        team1 = [winner1, waitingPlayers.shift()];
+                        team2 = [winner2];
                     } else {
                         team1 = [winner1];
-                    }
-                    
-                    if (waitingPlayers.length > 0) {
                         team2 = [winner2, waitingPlayers.shift()];
-                    } else {
-                        team2 = [winner2];
                     }
                 }
                 
@@ -2341,23 +2324,40 @@
             } else {
                 consecutiveInfo.style.display = 'none';
                 
+                // Sistema normal: perdedores vão para fila, vencedores continuam
                 const losingTeam = winningTeamId === 1 ? team2 : team1;
                 
+                // Adicionar perdedores à fila (separados)
                 losingTeam.forEach(player => {
-                    if (!waitingPlayers.includes(player)) {
-                        waitingPlayers.push(player);
-                    }
+                    addToWaitingQueue(player);
                 });
                 
-                if (waitingPlayers.length > 0) {
+                // Formar nova dupla para enfrentar os vencedores
+                if (waitingPlayers.length >= 2) {
+                    const newTeam = [];
+                    
+                    // Escolher primeiro jogador da fila
+                    newTeam.push(waitingPlayers.shift());
+                    
+                    // Escolher segundo jogador evitando duplas recentes
+                    let partnerFound = false;
+                    for (let i = 0; i < waitingPlayers.length; i++) {
+                        if (!havePlayedTogetherRecently(newTeam[0], waitingPlayers[i])) {
+                            newTeam.push(waitingPlayers.splice(i, 1)[0]);
+                            partnerFound = true;
+                            break;
+                        }
+                    }
+                    
+                    // Se não encontrou parceiro adequado, pega o próximo da fila
+                    if (!partnerFound && waitingPlayers.length > 0) {
+                        newTeam.push(waitingPlayers.shift());
+                    }
+                    
                     if (winningTeamId === 1) {
-                        if (waitingPlayers.length >= 2) {
-                            team2 = [waitingPlayers.shift(), waitingPlayers.shift()];
-                        }
+                        team2 = newTeam;
                     } else {
-                        if (waitingPlayers.length >= 2) {
-                            team1 = [waitingPlayers.shift(), waitingPlayers.shift()];
-                        }
+                        team1 = newTeam;
                     }
                 }
             }
@@ -2366,6 +2366,7 @@
             
             updateExitOrder();
             
+            // Resetar pontos da partida
             players.forEach(player => {
                 currentMatchPoints[player] = 0;
                 currentMatchErrors[player] = 0;
@@ -2373,17 +2374,51 @@
             pointsHistory = [];
             teamScores = { team1: 0, team2: 0 };
             
-            updatePlayersList(); // Atualizar a lista para mostrar novo número de jogos e vitórias consecutivas
+            updatePlayersList();
             updateModernStats();
             updateConfrontosStats();
             updatePointsStats();
+            updateNextPlayers();
             
             saveToLocalStorage();
             
             updateDisplay();
         }
         
-        // Gerar chave única para uma dupla (ordena os nomes para garantir unicidade)
+        // Verificar se jogadores jogaram juntos recentemente
+        function havePlayedTogetherRecently(player1, player2) {
+            // Verificar nas últimas partidas
+            const recentMatches = confrontosHistory.slice(-3);
+            for (const match of recentMatches) {
+                const team1Players = match.team1;
+                const team2Players = match.team2;
+                
+                if ((team1Players.includes(player1) && team1Players.includes(player2)) ||
+                    (team2Players.includes(player1) && team2Players.includes(player2))) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        // Adicionar jogador à fila de espera (com separação inteligente)
+        function addToWaitingQueue(player) {
+            if (waitingPlayers.length === 0) {
+                waitingPlayers.push(player);
+                return;
+            }
+            
+            // Se houver pelo menos 2 pessoas na fila, colocar no meio
+            if (waitingPlayers.length >= 2) {
+                const middleIndex = Math.floor(waitingPlayers.length / 2);
+                waitingPlayers.splice(middleIndex, 0, player);
+            } else {
+                // Se só tem 1, colocar no final
+                waitingPlayers.push(player);
+            }
+        }
+        
+        // Gerar chave única para uma dupla
         function getTeamKey(team) {
             return team.slice().sort().join('+');
         }
@@ -2455,7 +2490,6 @@
                 currentMatch: currentMatch,
                 tournamentTimeElapsed: tournamentTimeElapsed,
                 consecutiveWins: {...consecutiveWins},
-                coringaUsedInSorteio: [...coringaUsedInSorteio],
                 playerPoints: JSON.parse(JSON.stringify(playerPoints)),
                 playerErrors: JSON.parse(JSON.stringify(playerErrors)),
                 pointsHistory: [...pointsHistory],
@@ -2480,7 +2514,6 @@
             currentMatch = previousState.currentMatch;
             tournamentTimeElapsed = previousState.tournamentTimeElapsed;
             consecutiveWins = previousState.consecutiveWins || {};
-            coringaUsedInSorteio = previousState.coringaUsedInSorteio || [];
             playerPoints = previousState.playerPoints || {};
             playerErrors = previousState.playerErrors || {};
             pointsHistory = previousState.pointsHistory || [];
@@ -2503,6 +2536,7 @@
             updatePurchasesSummary();
             updatePurchasesSummaryResults();
             updatePurchasePlayersButtons();
+            updateNextPlayers();
             
             saveToLocalStorage();
         }
@@ -2530,7 +2564,6 @@
             currentMatch = nextState.currentMatch;
             tournamentTimeElapsed = nextState.tournamentTimeElapsed;
             consecutiveWins = nextState.consecutiveWins || {};
-            coringaUsedInSorteio = nextState.coringaUsedInSorteio || [];
             playerPoints = nextState.playerPoints || {};
             playerErrors = nextState.playerErrors || {};
             pointsHistory = nextState.pointsHistory || [];
@@ -2553,6 +2586,7 @@
             updatePurchasesSummary();
             updatePurchasesSummaryResults();
             updatePurchasePlayersButtons();
+            updateNextPlayers();
             
             saveToLocalStorage();
         }
@@ -2582,50 +2616,7 @@
             team1Element.innerHTML = '';
             if (team1.length > 0) {
                 team1.forEach(player => {
-                    const playerDiv = document.createElement('div');
-                    const isCoringa = player.includes("CORINGA");
-                    playerDiv.className = `team-player ${isCoringa ? "player-coringa" : ""}`;
-                    
-                    const pointsButtons = document.createElement('div');
-                    pointsButtons.className = 'player-points-buttons';
-                    
-                    const playerNameContainer = document.createElement('div');
-                    playerNameContainer.className = 'player-name-with-games';
-                    
-                    const playerName = document.createElement('div');
-                    playerName.className = 'player-name';
-                    
-                    // Formatar nome com número de jogos e vitórias consecutivas inline
-                    const playerStats = stats[player] || { matches: 0 };
-                    const gamesCount = playerStats.matches || 0;
-                    const playerConsecutiveWins = consecutiveWins[player] || 0;
-                    
-                    playerName.innerHTML = `
-                        <span class="player-name-inline">
-                            ${player}
-                        </span>
-                        <span class="player-games-separator">-</span>
-                        <span class="player-games-inline">${gamesCount}</span>
-                        ${playerConsecutiveWins > 0 ? `<span class="player-wins-separator">/</span><span class="player-wins-inline">${playerConsecutiveWins}</span>` : ''}
-                    `;
-                    
-                    const pointButton = document.createElement('button');
-                    pointButton.className = 'btn-point-small';
-                    pointButton.innerHTML = `Acertou ${currentMatchPoints[player] || 0}`;
-                    pointButton.onclick = () => addPoint(player);
-                    
-                    pointsButtons.appendChild(playerName);
-                    pointsButtons.appendChild(pointButton);
-                    
-                    playerDiv.appendChild(pointsButtons);
-                    
-                    if (consecutiveWins[player] > 0) {
-                        const consecutiveIndicator = document.createElement('div');
-                        consecutiveIndicator.className = 'consecutive-individual';
-                        consecutiveIndicator.textContent = consecutiveWins[player];
-                        playerDiv.appendChild(consecutiveIndicator);
-                    }
-                    
+                    const playerDiv = createPlayerElement(player);
                     team1Element.appendChild(playerDiv);
                 });
                 
@@ -2634,61 +2625,15 @@
                 } else {
                     team1WinsElement.textContent = '';
                 }
-                
-                sorteioTeam1Button.style.display = team1.some(p => p.includes("CORINGA")) ? 'block' : 'none';
             } else {
                 team1Element.innerHTML = '<p>A definir</p>';
                 team1WinsElement.textContent = '';
-                sorteioTeam1Button.style.display = 'none';
             }
             
             team2Element.innerHTML = '';
             if (team2.length > 0) {
                 team2.forEach(player => {
-                    const playerDiv = document.createElement('div');
-                    const isCoringa = player.includes("CORINGA");
-                    playerDiv.className = `team-player ${isCoringa ? "player-coringa" : ""}`;
-                    
-                    const pointsButtons = document.createElement('div');
-                    pointsButtons.className = 'player-points-buttons';
-                    
-                    const playerNameContainer = document.createElement('div');
-                    playerNameContainer.className = 'player-name-with-games';
-                    
-                    const playerName = document.createElement('div');
-                    playerName.className = 'player-name';
-                    
-                    // Formatar nome com número de jogos e vitórias consecutivas inline
-                    const playerStats = stats[player] || { matches: 0 };
-                    const gamesCount = playerStats.matches || 0;
-                    const playerConsecutiveWins = consecutiveWins[player] || 0;
-                    
-                    playerName.innerHTML = `
-                        <span class="player-name-inline">
-                            ${player}
-                        </span>
-                        <span class="player-games-separator">-</span>
-                        <span class="player-games-inline">${gamesCount}</span>
-                        ${playerConsecutiveWins > 0 ? `<span class="player-wins-separator">/</span><span class="player-wins-inline">${playerConsecutiveWins}</span>` : ''}
-                    `;
-                    
-                    const pointButton = document.createElement('button');
-                    pointButton.className = 'btn-point-small';
-                    pointButton.innerHTML = `Acertou ${currentMatchPoints[player] || 0}`;
-                    pointButton.onclick = () => addPoint(player);
-                    
-                    pointsButtons.appendChild(playerName);
-                    pointsButtons.appendChild(pointButton);
-                    
-                    playerDiv.appendChild(pointsButtons);
-                    
-                    if (consecutiveWins[player] > 0) {
-                        const consecutiveIndicator = document.createElement('div');
-                        consecutiveIndicator.className = 'consecutive-individual';
-                        consecutiveIndicator.textContent = consecutiveWins[player];
-                        playerDiv.appendChild(consecutiveIndicator);
-                    }
-                    
+                    const playerDiv = createPlayerElement(player);
                     team2Element.appendChild(playerDiv);
                 });
                 
@@ -2697,127 +2642,123 @@
                 } else {
                     team2WinsElement.textContent = '';
                 }
-                
-                sorteioTeam2Button.style.display = team2.some(p => p.includes("CORINGA")) ? 'block' : 'none';
             } else {
                 team2Element.innerHTML = '<p>A definir</p>';
                 team2WinsElement.textContent = '';
-                sorteioTeam2Button.style.display = 'none';
-            }
-            
-            waitingPlayersElement.innerHTML = '';
-            if (waitingPlayers.length > 0) {
-                const ol = document.createElement('ol');
-                waitingPlayers.forEach((player) => {
-                    const li = document.createElement('li');
-                    
-                    const isCoringa = player.includes("CORINGA");
-                    const playerStats = stats[player] || { matches: 0 };
-                    const gamesCount = playerStats.matches || 0;
-                    const playerConsecutiveWins = consecutiveWins[player] || 0;
-                    
-                    li.innerHTML = `
-                        <div class="player-name-with-games">
-                            <span class="player-name-inline">
-                                ${isCoringa ? '<span style="color: #9c27b0; font-weight: bold;">' + player + '</span>' : player}
-                            </span>
-                            <span class="player-games-separator">-</span>
-                            <span class="player-games-inline">${gamesCount}</span>
-                            ${playerConsecutiveWins > 0 ? `<span class="player-wins-separator">/</span><span class="player-wins-inline">${playerConsecutiveWins}</span>` : ''}
-                        </div>
-                    `;
-                    
-                    if (player.includes("CORINGA")) {
-                        li.style.fontWeight = 'bold';
-                    }
-                    ol.appendChild(li);
-                });
-                waitingPlayersElement.appendChild(ol);
-            } else {
-                waitingPlayersElement.textContent = 'Nenhum jogador na espera';
             }
         }
         
-        // Realizar sorteio do CORINGA
-        function realizarSorteio(teamId) {
-            saveCurrentStateToHistory();
+        // Criar elemento do jogador
+        function createPlayerElement(player) {
+            const playerDiv = document.createElement('div');
+            playerDiv.className = 'team-player';
             
-            const team = teamId === 1 ? team1 : team2;
+            const pointsButtons = document.createElement('div');
+            pointsButtons.className = 'player-points-buttons';
             
-            const coringaIndex = team.findIndex(p => p.includes("CORINGA"));
+            const playerName = document.createElement('div');
+            playerName.className = 'player-name';
             
-            if (coringaIndex === -1) {
-                alert("CORINGA não está nesta equipe!");
+            const playerStats = stats[player] || { matches: 0 };
+            const gamesCount = playerStats.matches || 0;
+            const playerConsecutiveWins = consecutiveWins[player] || 0;
+            
+            playerName.innerHTML = `
+                <span class="player-name-inline">
+                    ${player}
+                </span>
+                <span class="player-games-separator">-</span>
+                <span class="player-games-inline">${gamesCount}</span>
+                ${playerConsecutiveWins > 0 ? `<span class="player-wins-separator">/</span><span class="player-wins-inline">${playerConsecutiveWins}</span>` : ''}
+            `;
+            
+            const pointButton = document.createElement('button');
+            pointButton.className = 'btn-point-small';
+            pointButton.innerHTML = `Acertou ${currentMatchPoints[player] || 0}`;
+            pointButton.onclick = () => addPoint(player);
+            
+            pointsButtons.appendChild(playerName);
+            pointsButtons.appendChild(pointButton);
+            
+            playerDiv.appendChild(pointsButtons);
+            
+            if (consecutiveWins[player] > 0) {
+                const consecutiveIndicator = document.createElement('div');
+                consecutiveIndicator.className = 'consecutive-individual';
+                consecutiveIndicator.textContent = consecutiveWins[player];
+                playerDiv.appendChild(consecutiveIndicator);
+            }
+            
+            return playerDiv;
+        }
+        
+        // Atualizar próximos jogadores (apenas 2)
+        function updateNextPlayers() {
+            nextPlayersElement.innerHTML = '';
+            
+            if (waitingPlayers.length === 0) {
+                nextPlayersElement.innerHTML = '<p>Nenhum jogador na espera</p>';
                 return;
             }
             
-            const coringaName = team[coringaIndex];
+            // Mostrar apenas os 2 primeiros da fila
+            const nextTwo = waitingPlayers.slice(0, 2);
             
-            const eligiblePlayers = waitingPlayers.filter((player, index) => 
-                index < waitingPlayers.length - 2 && 
-                !player.includes("CORINGA") && 
-                !coringaUsedInSorteio.includes(player)
-            );
-            
-            if (eligiblePlayers.length === 0) {
-                if (waitingPlayers.filter(p => !p.includes("CORINGA")).length <= 2) {
-                    alert("Não há jogadores suficientes na fila de espera para realizar o sorteio!");
-                    return;
-                }
+            nextTwo.forEach((player, index) => {
+                const playerItem = document.createElement('div');
+                playerItem.className = 'next-player-item';
                 
-                coringaUsedInSorteio = [];
+                const playerStats = stats[player] || { matches: 0 };
+                const gamesCount = playerStats.matches || 0;
                 
-                const newEligiblePlayers = waitingPlayers.filter((player, index) => 
-                    index < waitingPlayers.length - 2 && !player.includes("CORINGA")
-                );
+                playerItem.innerHTML = `
+                    <div class="player-name-with-games">
+                        <span class="queue-position">${index + 1}º</span>
+                        <span class="player-name-inline">${player}</span>
+                        <span class="player-games-separator">-</span>
+                        <span class="player-games-inline">${gamesCount}</span>
+                    </div>
+                `;
                 
-                if (newEligiblePlayers.length === 0) {
-                    alert("Não há jogadores elegíveis para o sorteio!");
-                    return;
-                }
-                
-                const selectedPlayer = newEligiblePlayers.reduce((prev, curr) => 
-                    stats[prev].matches < stats[curr].matches ? prev : curr
-                );
-                
-                team[coringaIndex] = selectedPlayer;
-                
-                const playerIndex = waitingPlayers.indexOf(selectedPlayer);
-                if (playerIndex !== -1) {
-                    waitingPlayers.splice(playerIndex, 1);
-                }
-                
-                waitingPlayers.push(coringaName);
-                
-                coringaUsedInSorteio.push(selectedPlayer);
-                
-                alert(`${coringaName} foi substituído por ${selectedPlayer}!`);
-            } else {
-                const selectedPlayer = eligiblePlayers.reduce((prev, curr) => 
-                    stats[prev].matches < stats[curr].matches ? prev : curr
-                );
-                
-                team[coringaIndex] = selectedPlayer;
-                
-                const playerIndex = waitingPlayers.indexOf(selectedPlayer);
-                if (playerIndex !== -1) {
-                    waitingPlayers.splice(playerIndex, 1);
-                }
-                
-                waitingPlayers.push(coringaName);
-                
-                coringaUsedInSorteio.push(selectedPlayer);
-                
-                alert(`${coringaName} foi substituído por ${selectedPlayer}!`);
+                nextPlayersElement.appendChild(playerItem);
+            });
+        }
+        
+        // Mostrar diálogo da fila completa
+        function showFullQueueDialog() {
+            if (waitingPlayers.length === 0) {
+                alert('Não há jogadores na fila de espera.');
+                return;
             }
             
-            currentPlayers = [...team1, ...team2];
+            fullQueueList.innerHTML = '';
             
-            updateExitOrder();
+            waitingPlayers.forEach((player, index) => {
+                const li = document.createElement('li');
+                
+                const playerStats = stats[player] || { matches: 0 };
+                const gamesCount = playerStats.matches || 0;
+                
+                li.innerHTML = `
+                    <div class="player-name-with-games">
+                        <span class="queue-position">${index + 1}º</span>
+                        <span class="player-name-inline">${player}</span>
+                        <span class="player-games-separator">-</span>
+                        <span class="player-games-inline">${gamesCount}</span>
+                    </div>
+                `;
+                
+                fullQueueList.appendChild(li);
+            });
             
-            updateDisplay();
-            
-            saveToLocalStorage();
+            fullQueueDialog.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+        
+        // Esconder diálogo da fila completa
+        function hideFullQueueDialog() {
+            fullQueueDialog.style.display = 'none';
+            overlay.style.display = 'none';
         }
         
         // Adicionar ponto para um jogador
@@ -2827,9 +2768,7 @@
             const playerTeam = team1.includes(player) ? 1 : 2;
             
             currentMatchPoints[player] = (currentMatchPoints[player] || 0) + 1;
-            
             playerPoints[player] = (playerPoints[player] || 0) + 1;
-            
             teamScores[`team${playerTeam}`]++;
             
             const now = new Date();
@@ -2847,7 +2786,7 @@
             saveToLocalStorage();
         }
         
-        // Adicionar erro do adversário (ponto sem jogador específico)
+        // Adicionar erro do adversário
         function addErrorAdversario(teamId) {
             saveCurrentStateToHistory();
             
@@ -2868,12 +2807,12 @@
             saveToLocalStorage();
         }
         
-        // Atualizar estatísticas modernas (excluindo CORINGAs)
+        // Atualizar estatísticas modernas
         function updateModernStats() {
             modernStatsElement.innerHTML = '';
             
             const statsArray = Object.entries(stats)
-                .filter(([player]) => !player.includes("CORINGA"))
+                .filter(([player]) => !removedPlayers.includes(player))
                 .map(([player, data]) => {
                     const winPercentage = data.matches > 0 ? ((data.wins / data.matches) * 100).toFixed(1) : '0.0';
                     const consecutiveWinsCount = consecutiveWins[player] || 0;
@@ -2893,7 +2832,6 @@
                 const lastWins = statsArray[statsArray.length - 1].wins;
                 const lastLosses = statsArray[statsArray.length - 1].losses;
                 
-                // Encontrar todos os jogadores com os mesmos números de vitórias e derrotas do último
                 lastPlaceEmojiPlayers = statsArray.filter(s => s.wins === lastWins && s.losses === lastLosses);
             }
             
@@ -2907,7 +2845,6 @@
                 if (index === 0) emoji = '🏆';
                 else if (index === 1) emoji = '🥈';
                 else if (index === 2) emoji = '🥉';
-                // Mostrar emoji 💩 para todos que estão empatados em último lugar
                 else if (lastPlaceEmojiPlayers.some(p => p.player === player)) {
                     emoji = '💩';
                 }
@@ -2929,7 +2866,7 @@
             });
         }
         
-        // Atualizar relatório de confrontos (apenas informações básicas)
+        // Atualizar relatório de confrontos
         function updateConfrontosStats() {
             teamStatsElement.innerHTML = '';
             
@@ -2965,7 +2902,7 @@
             pointsStatsElement.innerHTML = '';
             
             const pointsArray = Object.entries(playerPoints)
-                .filter(([player]) => !player.includes("CORINGA"))
+                .filter(([player]) => !removedPlayers.includes(player))
                 .map(([player, points]) => {
                     return { player, points };
                 });
@@ -3003,102 +2940,163 @@
             pointsStatsElement.appendChild(table);
         }
         
-        // Compartilhar resultados individuais
-        function shareResults() {
-            const currentDate = new Date().toLocaleDateString('pt-BR');
+        // Compartilhar estatísticas como imagem
+        function shareStatsAsImage() {
+            // Esconder todos os outros elementos temporariamente
+            const originalDisplay = modernStatsElement.style.display;
+            modernStatsElement.style.display = 'block';
             
-            const statsArray = Object.entries(stats)
-                .filter(([player]) => !player.includes("CORINGA"))
-                .map(([player, data]) => {
-                    const winPercentage = data.matches > 0 ? ((data.wins / data.matches) * 100).toFixed(1) : '0.0';
-                    const consecutiveWinsCount = consecutiveWins[player] || 0;
-                    return { player, ...data, winPercentage, consecutiveWins: consecutiveWinsCount };
+            // Criar container para a imagem
+            shareImageContainer.innerHTML = '';
+            shareImageContainer.style.display = 'block';
+            
+            const title = document.createElement('div');
+            title.className = 'share-image-title';
+            title.textContent = '🏸 PETECANDO 2026 - ESTATÍSTICAS INDIVIDUAIS 🏸';
+            
+            const date = document.createElement('div');
+            date.style.textAlign = 'center';
+            date.style.marginBottom = '10px';
+            date.style.fontSize = '0.9rem';
+            date.textContent = `📅 Data: ${new Date().toLocaleDateString('pt-BR')} | ⚔️ Partidas: ${currentMatch}`;
+            
+            const content = document.createElement('div');
+            content.className = 'share-image-content';
+            
+            // Clonar as estatísticas
+            const statsClone = modernStatsElement.cloneNode(true);
+            content.appendChild(title);
+            content.appendChild(date);
+            content.appendChild(statsClone);
+            
+            shareImageContainer.appendChild(content);
+            
+            // Gerar imagem
+            html2canvas(shareImageContainer).then(canvas => {
+                canvas.toBlob(blob => {
+                    const file = new File([blob], 'estatisticas-petecando.png', { type: 'image/png' });
+                    
+                    if (navigator.share && navigator.canShare({ files: [file] })) {
+                        navigator.share({
+                            files: [file],
+                            title: 'Petecando 2026 - Estatísticas',
+                            text: 'Confira as estatísticas do torneio de peteca!'
+                        }).catch(error => {
+                            console.log('Erro ao compartilhar:', error);
+                            downloadImage(canvas, 'estatisticas-petecando.png');
+                        });
+                    } else {
+                        downloadImage(canvas, 'estatisticas-petecando.png');
+                    }
                 });
-            
-            statsArray.sort((a, b) => {
-                if (b.wins !== a.wins) {
-                    return b.wins - a.wins;
-                }
-                return a.losses - b.losses;
             });
             
-            let content = `🏸 *PETECANDO 2026 - ESTATÍSTICAS INDIVIDUAIS* 🏸\n\n`;
-            content += `📅 Data: ${currentDate}\n`;
-            content += `⚔️ Partidas: ${currentMatch}\n\n`;
-            
-            content += `*CLASSIFICAÇÃO:*\n\n`;
-            
-            statsArray.forEach(({ player, matches, wins, losses, winPercentage, consecutiveWins: consecutiveWinsCount }, index) => {
-                const isRemoved = removedPlayers.includes(player);
-                const status = isRemoved ? " (SAIU)" : "";
-                const medal = index === 0 ? "🥇 " : index === 1 ? "🥈 " : index === 2 ? "🥉 " : "";
-                
-                content += `${medal}*${index + 1}º - ${player}${status}*\n`;
-                content += `   Partidas: ${matches} | Vitórias: ${wins} | Derrotas: ${losses} | % Vitórias: ${winPercentage}%\n`;
-                if (consecutiveWinsCount > 0) {
-                    content += `   Vitórias Consecutivas Atuais: ${consecutiveWinsCount}\n`;
-                }
-                content += `\n`;
-            });
-            
-            content += `\n📱 Gerado pelo Petecando 2026\n`;
-            content += `👨‍💻 App by Hugo Ribeiro`;
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Petecando 2026 - Estatísticas Individuais',
-                    text: content
-                }).catch(error => {
-                    console.log('Erro ao compartilhar:', error);
-                    copyToClipboard(content);
-                });
-            } else {
-                copyToClipboard(content);
-            }
+            // Restaurar display original
+            modernStatsElement.style.display = originalDisplay;
+            shareImageContainer.style.display = 'none';
         }
         
-        // Compartilhar resultados de pontos
-        function sharePointsResults() {
-            const currentDate = new Date().toLocaleDateString('pt-BR');
+        // Compartilhar estatísticas de pontos como imagem
+        function sharePointsAsImage() {
+            pointsStatsElement.style.display = 'block';
             
-            const pointsArray = Object.entries(playerPoints)
-                .filter(([player]) => !player.includes("CORINGA"))
-                .map(([player, points]) => {
-                    return { player, points };
+            shareImageContainer.innerHTML = '';
+            shareImageContainer.style.display = 'block';
+            
+            const title = document.createElement('div');
+            title.className = 'share-image-title';
+            title.textContent = '🏸 PETECANDO 2026 - ESTATÍSTICAS DE PONTOS 🏸';
+            
+            const date = document.createElement('div');
+            date.style.textAlign = 'center';
+            date.style.marginBottom = '10px';
+            date.style.fontSize = '0.9rem';
+            date.textContent = `📅 Data: ${new Date().toLocaleDateString('pt-BR')} | ⚔️ Partidas: ${currentMatch}`;
+            
+            const content = document.createElement('div');
+            content.className = 'share-image-content';
+            
+            const statsClone = pointsStatsElement.cloneNode(true);
+            content.appendChild(title);
+            content.appendChild(date);
+            content.appendChild(statsClone);
+            
+            shareImageContainer.appendChild(content);
+            
+            html2canvas(shareImageContainer).then(canvas => {
+                canvas.toBlob(blob => {
+                    const file = new File([blob], 'pontos-petecando.png', { type: 'image/png' });
+                    
+                    if (navigator.share && navigator.canShare({ files: [file] })) {
+                        navigator.share({
+                            files: [file],
+                            title: 'Petecando 2026 - Pontos',
+                            text: 'Confira as estatísticas de pontos do torneio!'
+                        }).catch(error => {
+                            console.log('Erro ao compartilhar:', error);
+                            downloadImage(canvas, 'pontos-petecando.png');
+                        });
+                    } else {
+                        downloadImage(canvas, 'pontos-petecando.png');
+                    }
                 });
-            
-            pointsArray.sort((a, b) => b.points - a.points);
-            
-            let content = `🏸 *PETECANDO 2026 - ESTATÍSTICAS DE PONTOS* 🏸\n\n`;
-            content += `📅 Data: ${currentDate}\n`;
-            content += `⚔️ Partidas: ${currentMatch}\n\n`;
-            
-            content += `*MAIORES PONTUADORES:*\n\n`;
-            
-            pointsArray.forEach(({ player, points }, index) => {
-                const medal = index === 0 ? "🥇 " : index === 1 ? "🥈 " : index === 2 ? "🥉 " : "";
-                
-                content += `${medal}*${index + 1}º - ${player}*\n`;
-                content += `   Pontos: ${points}\n\n`;
             });
             
-            content += `\n📱 Gerado pelo Petecando 2026\n`;
-            content += `👨‍💻 App by Hugo Ribeiro`;
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Petecando 2026 - Estatísticas de Pontos',
-                    text: content
-                }).catch(error => {
-                    console.log('Erro ao compartilhar:', error);
-                    copyToClipboard(content);
-                });
-            } else {
-                copyToClipboard(content);
-            }
+            pointsStatsElement.style.display = '';
+            shareImageContainer.style.display = 'none';
         }
         
-        // Compartilhar relatório de confrontos (texto para WhatsApp)
+        // Compartilhar relatório de gastos como imagem
+        function sharePurchasesAsImage() {
+            purchasesSummaryResults.style.display = 'block';
+            
+            shareImageContainer.innerHTML = '';
+            shareImageContainer.style.display = 'block';
+            
+            const title = document.createElement('div');
+            title.className = 'share-image-title';
+            title.textContent = '🏸 PETECANDO 2026 - RELATÓRIO DE GASTOS 🏸';
+            
+            const date = document.createElement('div');
+            date.style.textAlign = 'center';
+            date.style.marginBottom = '10px';
+            date.style.fontSize = '0.9rem';
+            date.textContent = `📅 Data: ${new Date().toLocaleDateString('pt-BR')}`;
+            
+            const content = document.createElement('div');
+            content.className = 'share-image-content';
+            
+            const statsClone = purchasesSummaryResults.cloneNode(true);
+            content.appendChild(title);
+            content.appendChild(date);
+            content.appendChild(statsClone);
+            
+            shareImageContainer.appendChild(content);
+            
+            html2canvas(shareImageContainer).then(canvas => {
+                canvas.toBlob(blob => {
+                    const file = new File([blob], 'gastos-petecando.png', { type: 'image/png' });
+                    
+                    if (navigator.share && navigator.canShare({ files: [file] })) {
+                        navigator.share({
+                            files: [file],
+                            title: 'Petecando 2026 - Gastos',
+                            text: 'Confira o relatório de gastos do torneio!'
+                        }).catch(error => {
+                            console.log('Erro ao compartilhar:', error);
+                            downloadImage(canvas, 'gastos-petecando.png');
+                        });
+                    } else {
+                        downloadImage(canvas, 'gastos-petecando.png');
+                    }
+                });
+            });
+            
+            purchasesSummaryResults.style.display = '';
+            shareImageContainer.style.display = 'none';
+        }
+        
+        // Compartilhar relatório de confrontos (texto - mantido como antes)
         function shareConfrontosResults() {
             const currentDate = new Date().toLocaleDateString('pt-BR');
             
@@ -3132,6 +3130,15 @@
             }
         }
         
+        // Função para baixar imagem
+        function downloadImage(canvas, filename) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            alert('Imagem baixada! Agora você pode compartilhar no WhatsApp.');
+        }
+        
         // Função para copiar texto para a área de transferência
         function copyToClipboard(text) {
             const textarea = document.createElement('textarea');
@@ -3143,12 +3150,12 @@
             alert('Relatório copiado para a área de transferência! Cole no WhatsApp para compartilhar.');
         }
         
-        // Exportar dados do torneio em formato de texto
+        // Exportar dados do torneio
         function exportTournamentData() {
             const currentDate = new Date().toLocaleDateString('pt-BR');
             
             const statsArray = Object.entries(stats)
-                .filter(([player]) => !player.includes("CORINGA"))
+                .filter(([player]) => !removedPlayers.includes(player))
                 .map(([player, data]) => {
                     const winPercentage = data.matches > 0 ? ((data.wins / data.matches) * 100).toFixed(1) : '0.0';
                     const consecutiveWinsCount = consecutiveWins[player] || 0;
@@ -3162,20 +3169,8 @@
                 return a.losses - b.losses;
             });
             
-            const teamStatsArray = Object.entries(teamStats).map(([teamKey, data]) => {
-                const winPercentage = data.matches > 0 ? ((data.wins / data.matches) * 100).toFixed(1) : '0.0';
-                return { teamKey, players: data.players, ...data, winPercentage };
-            });
-            
-            teamStatsArray.sort((a, b) => {
-                if (b.wins !== a.wins) {
-                    return b.wins - a.wins;
-                }
-                return a.losses - b.losses;
-            });
-            
             const pointsArray = Object.entries(playerPoints)
-                .filter(([player]) => !player.includes("CORINGA"))
+                .filter(([player]) => !removedPlayers.includes(player))
                 .map(([player, points]) => {
                     return { player, points };
                 });
@@ -3185,21 +3180,18 @@
             let content = `PETECANDO 2026 - RELATÓRIO COMPLETO DO TORNEIO\n`;
             content += `Data: ${currentDate}\n`;
             content += `Total de partidas: ${currentMatch}\n`;
-            content += `Jogadores participantes: ${players.filter(p => !p.includes("CORINGA")).length}\n`;
-            content += `CORINGAs: ${countCoringas()}\n`;
-            content += `Jogadores ativos: ${players.filter(p => !p.includes("CORINGA")).length - removedPlayers.filter(p => !p.includes("CORINGA")).length}\n`;
-            content += `Jogadores que saíram: ${removedPlayers.filter(p => !p.includes("CORINGA")).length}\n\n`;
+            content += `Jogadores participantes: ${players.filter(p => !removedPlayers.includes(p)).length}\n`;
+            content += `Jogadores ativos: ${players.filter(p => !removedPlayers.includes(p)).length}\n`;
+            content += `Jogadores que saíram: ${removedPlayers.length}\n\n`;
             
             content += `==========================================\n`;
             content += `ESTATÍSTICAS INDIVIDUAIS\n`;
             content += `==========================================\n\n`;
             
             statsArray.forEach(({ player, matches, wins, losses, winPercentage, consecutiveWins: consecutiveWinsCount }, index) => {
-                const isRemoved = removedPlayers.includes(player);
-                const status = isRemoved ? " (SAIU)" : "";
-                const consecutive = consecutiveWinsCount > 0 ? ` | Vitórias consecutivas: ${consecutiveWinsCount}` : "";
+                const consecutive = consecutiveWinsCount > 0 ? ` | Vitórias consecutivas: ${consecutiveWinsCount}` : '';
                 
-                content += `${(index + 1).toString().padStart(2, '0')}º - ${player}${status}\n`;
+                content += `${(index + 1).toString().padStart(2, '0')}º - ${player}\n`;
                 content += `   Partidas: ${matches} | Vitórias: ${wins} | Derrotas: ${losses} | % Vitórias: ${winPercentage}%${consecutive}\n\n`;
             });
             
@@ -3376,7 +3368,6 @@
             tournamentTimeElapsed = 0;
             matchHistory = [];
             consecutiveWins = {};
-            coringaUsedInSorteio = [];
             playerPoints = {};
             playerErrors = {};
             pointsHistory = [];
@@ -3388,10 +3379,6 @@
             purchases = [];
             
             localStorage.removeItem('petecaTournament');
-            sessionStorage.removeItem('petecaTournamentBackup');
-            
-            // Limpar cookie também
-            document.cookie = "petecaTournament=; max-age=0; path=/";
             
             playerNameInput.value = '';
             updatePlayersList();
@@ -3407,6 +3394,7 @@
             updatePurchasesSummary();
             updatePurchasesSummaryResults();
             updatePurchasePlayersButtons();
+            updateNextPlayers();
             
             releaseWakeLock();
             
@@ -3415,12 +3403,11 @@
             alert('Torneio reiniciado com sucesso!');
         }
         
-        // Solicitar wake lock para manter a tela ativa
+        // Solicitar wake lock
         async function requestWakeLock() {
             try {
                 if ('wakeLock' in navigator) {
                     wakeLock = await navigator.wakeLock.request('screen');
-                    console.log('Wake Lock ativado');
                     
                     document.addEventListener('visibilitychange', async () => {
                         if (document.visibilityState === 'visible' && tournamentStarted) {
@@ -3438,7 +3425,6 @@
             if (wakeLock !== null) {
                 await wakeLock.release();
                 wakeLock = null;
-                console.log('Wake Lock liberado');
             }
         }
         
@@ -3510,7 +3496,7 @@
                 return;
             }
             
-            // Agrupar compras por jogador para facilitar a visualização
+            // Agrupar compras por jogador
             const purchasesByPlayer = {};
             
             purchases.forEach(purchase => {
@@ -3555,21 +3541,21 @@
                     itemActions.style.display = 'flex';
                     itemActions.style.gap = '4px';
                     
-                    // Botão para adicionar mais uma unidade do mesmo item
+                    // Botão para adicionar mais uma unidade
                     const addBtn = document.createElement('button');
                     addBtn.className = 'btn-point-small';
                     addBtn.innerHTML = '+1';
                     addBtn.title = 'Adicionar mais uma unidade';
                     addBtn.onclick = () => duplicatePurchaseItem(purchase.id, player);
                     
-                    // Botão para remover uma unidade (com senha)
+                    // Botão para remover uma unidade
                     const removeBtn = document.createElement('button');
                     removeBtn.className = 'btn-error-small';
                     removeBtn.innerHTML = '-1';
                     removeBtn.title = 'Remover uma unidade';
                     removeBtn.onclick = () => showPasswordDialogForPurchase('remove', purchase.id, player);
                     
-                    // Botão para remover completamente o item
+                    // Botão para remover completamente
                     const deleteBtn = document.createElement('button');
                     deleteBtn.className = 'btn-remove-purchase-small';
                     deleteBtn.innerHTML = '×';
@@ -3590,7 +3576,7 @@
             });
         }
         
-        // Duplicar item de compra (adicionar +1 do mesmo item)
+        // Duplicar item de compra
         function duplicatePurchaseItem(purchaseId, player) {
             saveCurrentStateToHistory();
             
@@ -3612,7 +3598,7 @@
             }
         }
         
-        // Mostrar diálogo de senha para ações de compra
+        // Mostrar diálogo de senha para compras
         function showPasswordDialogForPurchase(action, purchaseId, player) {
             currentAction = action;
             currentPurchaseId = purchaseId;
@@ -3632,7 +3618,7 @@
             passwordInput.focus();
         }
         
-        // Remover item de compra (após confirmação de senha)
+        // Remover item de compra
         function removePurchaseItem(purchaseId, player) {
             const purchaseIndex = purchases.findIndex(p => p.id === purchaseId && p.players.includes(player));
             
@@ -3736,7 +3722,7 @@
             purchasesSummary.appendChild(grandTotalElement);
         }
         
-        // Atualizar resumo de compras para a aba de resultados
+        // Atualizar resumo de compras para resultados
         function updatePurchasesSummaryResults() {
             purchasesSummaryResults.innerHTML = '';
             
@@ -3826,78 +3812,6 @@
             purchasesSummaryResults.appendChild(pixInfo);
         }
         
-        // Compartilhar relatório de gastos
-        function sharePurchasesResults() {
-            const currentDate = new Date().toLocaleDateString('pt-BR');
-            
-            if (purchases.length === 0) {
-                alert('Nenhuma compra registrada para compartilhar.');
-                return;
-            }
-            
-            const playerTotals = {};
-            const playerItems = {};
-            
-            purchases.forEach(purchase => {
-                purchase.players.forEach(player => {
-                    if (!playerTotals[player]) {
-                        playerTotals[player] = 0;
-                        playerItems[player] = {};
-                    }
-                    
-                    playerTotals[player] += purchase.price;
-                    
-                    if (!playerItems[player][purchase.item]) {
-                        playerItems[player][purchase.item] = {
-                            count: 0,
-                            price: purchase.price
-                        };
-                    }
-                    playerItems[player][purchase.item].count++;
-                });
-            });
-            
-            const sortedPlayers = Object.entries(playerTotals)
-                .sort((a, b) => b[1] - a[1])
-                .map(([player, total]) => ({ player, total, items: playerItems[player] }));
-            
-            const grandTotal = sortedPlayers.reduce((sum, { total }) => sum + total, 0);
-            
-            let content = `🏸 *PETECANDO 2026 - RELATÓRIO DE GASTOS* 🏸\n\n`;
-            content += `📅 Data: ${currentDate}\n\n`;
-            content += `*RESUMO POR JOGADOR:*\n\n`;
-            
-            sortedPlayers.forEach(({ player, total, items }, index) => {
-                content += `*${index + 1}º - ${player}:* R$ ${total.toFixed(2)}\n`;
-                
-                Object.keys(items).forEach(itemName => {
-                    const itemInfo = items[itemName];
-                    content += `   ${itemName} (${itemInfo.count}x): R$ ${(itemInfo.price * itemInfo.count).toFixed(2)}\n`;
-                });
-                content += `\n`;
-            });
-            
-            content += `*TOTAL GERAL: R$ ${grandTotal.toFixed(2)}*\n\n`;
-            content += `💳 *PAGAMENTO VIA PIX:*\n`;
-            content += ` Chave PIX: peteca.pix@gmail.com\n\n`;
-            content += `_Verba arrecadada para confraternizações_\n\n`;
-            
-            content += `📱 Gerado pelo Petecando 2026\n`;
-            content += `👨‍💻 App by Hugo Ribeiro`;
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Petecando 2026 - Relatório de Gastos',
-                    text: content
-                }).catch(error => {
-                    console.log('Erro ao compartilhar:', error);
-                    copyToClipboard(content);
-                });
-            } else {
-                copyToClipboard(content);
-            }
-        }
-        
         // Salvar estado atual no histórico
         function saveCurrentStateToHistory() {
             matchHistory.push({
@@ -3913,7 +3827,6 @@
                 currentMatch: currentMatch,
                 tournamentTimeElapsed: tournamentTimeElapsed,
                 consecutiveWins: {...consecutiveWins},
-                coringaUsedInSorteio: [...coringaUsedInSorteio],
                 playerPoints: JSON.parse(JSON.stringify(playerPoints)),
                 playerErrors: JSON.parse(JSON.stringify(playerErrors)),
                 pointsHistory: [...pointsHistory],
@@ -3985,6 +3898,7 @@
             updateConfrontosStats();
             updateSwapDropdowns();
             updatePurchasePlayersButtons();
+            updateNextPlayers();
             saveToLocalStorage();
             
             alert(`Jogadores ${player1} e ${player2} trocados com sucesso!`);
@@ -4029,13 +3943,7 @@
         purchasePriceInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 if (purchaseItemInput.value.trim() && purchasePriceInput.value) {
-                    // Se houver um jogador selecionado, adicionar para ele
-                    const selectedPlayerBtn = document.querySelector('.player-purchase-btn.selected');
-                    if (selectedPlayerBtn) {
-                        addPurchaseForPlayer(selectedPlayerBtn.textContent);
-                    } else {
-                        alert('Selecione um jogador clicando no botão com o nome dele.');
-                    }
+                    alert('Selecione um jogador clicando no botão com o nome dele.');
                 }
             }
         });
@@ -4045,7 +3953,7 @@
             saveToLocalStorage();
         });
         
-        // Salvar automaticamente periodicamente (a cada 30 segundos)
+        // Salvar automaticamente periodicamente
         setInterval(function() {
             if (tournamentStarted || players.length > 0) {
                 saveToLocalStorage();
@@ -4066,6 +3974,7 @@
             updatePurchasesSummary();
             updatePurchasesSummaryResults();
             updatePurchasePlayersButtons();
+            updateNextPlayers();
             initTabs();
             initPWA();
             
@@ -4073,7 +3982,7 @@
                 requestWakeLock();
             }
             
-            // Salvar imediatamente após carregar para garantir backup
+            // Salvar imediatamente após carregar
             setTimeout(function() {
                 saveToLocalStorage();
             }, 1000);
