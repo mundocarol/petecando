@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Mundo Carol - Frente de Caixa</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: 'Roboto', sans-serif;
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        min-height: 100vh;
+        padding: 20px;
+    }
+    
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
+    /* Header */
+    .header {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 20px 25px;
+        margin-bottom: 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    
+    .logo h1 {
+        color: white;
+        font-size: 24px;
+        letter-spacing: 2px;
+    }
+    
+    .logo p {
+        color: #FFD600;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+    
+    .header-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .btn-header {
+        background: rgba(255,255,255,0.2);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        color: white;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .btn-header:hover {
+        background: rgba(255,255,255,0.3);
+        transform: translateY(-2px);
+    }
+    
+    .btn-primary {
+        background: #27ae60;
+    }
+    
+    .btn-primary:hover {
+        background: #219653;
+    }
+    
+    .btn-warning {
+        background: #e74c3c;
+    }
+    
+    .btn-warning:hover {
+        background: #c0392b;
+    }
+    
+    .btn-info {
+        background: #3498db;
+    }
+    
+    .btn-info:hover {
+        background: #2980b9;
+    }
+    
+    /* Main Content */
+    .main-content {
+        display: flex;
+        gap: 25px;
+        flex-wrap: wrap;
+    }
+    
+    /* Produtos Section */
+    .produtos-section {
+        flex: 2;
+        min-width: 400px;
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+    
+    .resumo-section {
+        flex: 1.2;
+        min-width: 300px;
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+    
+    .section-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #3498db;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    /* Linha de produto */
+    .linha-produto {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .linha-produto input, .linha-produto select {
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: 'Roboto', sans-serif;
+        transition: all 0.3s;
+    }
+    
+    .linha-produto input:focus, .linha-produto select:focus {
+        outline: none;
+        border-color: #3498db;
+        box-shadow: 0 0 0 3px rgba(52,152,219,0.1);
+    }
+    
+    .codigo-input {
+        width: 120px;
+    }
+    
+    .produto-input {
+        flex: 2;
+        min-width: 200px;
+    }
+    
+    .qtd-input {
+        width: 80px;
+    }
+    
+    .preco-input {
+        width: 120px;
+    }
+    
+    .btn-adicionar {
+        background: #27ae60;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+    }
+    
+    .btn-adicionar:hover {
+        background: #219653;
+        transform: translateY(-2px);
+    }
+    
+    /* Tabela de produtos */
+    .tabela-wrapper {
+        overflow-x: auto;
+        max-height: 400px;
+        overflow-y: auto;
+        border-radius: 10px;
+        border: 1px solid #e0e0e0;
+    }
+    
+    .tabela-produtos {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+    
+    .tabela-produtos th {
+        background: #2c3e50;
+        color: white;
+        padding: 12px;
+        text-align: left;
+        position: sticky;
+        top: 0;
+    }
+    
+    .tabela-produtos td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .tabela-produtos tr:hover {
+        background: #f8f9fa;
+    }
+    
+    .btn-remover {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 11px;
+        transition: all 0.3s;
+    }
+    
+    .btn-remover:hover {
+        background: #c0392b;
+    }
+    
+    /* Resumo */
+    .info-cliente {
+        margin-bottom: 20px;
+    }
+    
+    .info-cliente label {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        color: #666;
+        margin-bottom: 5px;
+    }
+    
+    .info-cliente input, .info-cliente select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+    
+    .total-venda {
+        background: #e8f5e9;
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        margin: 20px 0;
+    }
+    
+    .total-venda label {
+        font-size: 14px;
+        color: #666;
+        display: block;
+        margin-bottom: 5px;
+    }
+    
+    .total-valor {
+        font-size: 32px;
+        font-weight: 700;
+        color: #27ae60;
+    }
+    
+    .troco-area {
+        background: #fff3cd;
+        padding: 15px;
+        border-radius: 10px;
+        margin: 15px 0;
+        display: none;
+    }
+    
+    .troco-area input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 16px;
+        margin-top: 8px;
+    }
+    
+    .troco-valor {
+        font-size: 18px;
+        font-weight: bold;
+        color: #e67e22;
+        margin-top: 10px;
+        text-align: right;
+    }
+    
+    .botoes-acao {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+    }
+    
+    .botoes-acao button {
+        flex: 1;
+        padding: 15px;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .btn-salvar {
+        background: #e74c3c;
+        color: white;
+    }
+    
+    .btn-salvar:hover {
+        background: #c0392b;
+        transform: translateY(-2px);
+    }
+    
+    .btn-salvar-imprimir {
+        background: #3498db;
+        color: white;
+    }
+    
+    .btn-salvar-imprimir:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+    }
+    
+    .atalhos {
+        background: #f8f9fa;
+        padding: 12px;
+        border-radius: 8px;
+        margin-top: 20px;
+        font-size: 11px;
+        color: #666;
+        text-align: center;
+    }
+    
+    .atalhos span {
+        background: #2c3e50;
+        color: white;
+        padding: 3px 8px;
+        border-radius: 5px;
+        margin: 0 3px;
+        font-family: monospace;
+    }
+    
+    /* Modal */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .modal-content {
+        background: white;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 800px;
+        max-height: 80vh;
+        overflow: hidden;
+        animation: slideIn 0.3s ease;
+    }
+    
+    .modal-header {
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        color: white;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .modal-body {
+        padding: 20px;
+        max-height: calc(80vh - 60px);
+        overflow-y: auto;
+    }
+    
+    @keyframes slideIn {
+        from {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    
+    /* Loading */
+    .loading {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.8);
+        z-index: 3000;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+    
+    .spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid rgba(255,255,255,0.3);
+        border-radius: 50%;
+        border-top-color: #3498db;
+        animation: spin 1s linear infinite;
+        margin-bottom: 15px;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
+        color: white;
+        font-size: 16px;
+    }
+    
+    /* Notificações */
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 10px;
+        color: white;
+        font-weight: 500;
+        z-index: 4000;
+        display: none;
+        animation: slideInRight 0.3s ease;
+    }
+    
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    .notification.success { background: #27ae60; }
+    .notification.error { background: #e74c3c; }
+    .notification.info { background: #3498db; }
+    
+    /* Responsivo */
+    @media (max-width: 768px) {
+        body { padding: 10px; }
+        .produtos-section, .resumo-section { min-width: 100%; }
+        .linha-produto { flex-direction: column; }
+        .linha-produto input { width: 100%; }
+        .btn-adicionar { justify-content: center; }
+        .botoes-acao { flex-direction: column; }
+    }
+    
+    /* Status */
+    .status-bar {
+        margin-top: 20px;
+        text-align: center;
+        color: rgba(255,255,255,0.7);
+        font-size: 12px;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="logo">
+            <h1>🏪 MUNDO CAROL</h1>
+            <p>Frente de Caixa - Venda Balcão</p>
+        </div>
+        <div class="header-buttons">
+            <button class="btn-header btn-info" onclick="verUltimasVendas()">
+                📋 Últimas Vendas
+            </button>
+            <button class="btn-header" onclick="limparVenda()">
+                🗑️ Nova Venda
+            </button>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <!-- Produtos -->
+        <div class="produtos-section">
+            <div class="section-title">
+                <span>🛒</span> Itens da Venda
+            </div>
+            
+            <div class="linha-produto">
+                <input type="text" id="codigoProduto" class="codigo-input" placeholder="Código" autocomplete="off">
+                <input type="text" id="nomeProduto" class="produto-input" placeholder="Produto *" autocomplete="off">
+                <input type="number" id="quantidade" class="qtd-input" value="1" min="1" step="1">
+                <input type="number" id="precoUnitario" class="preco-input" placeholder="Preço R$ *" step="0.01">
+                <button class="btn-adicionar" onclick="adicionarProduto()">
+                    ➕ Adicionar
+                </button>
+            </div>
+            
+            <div class="tabela-wrapper">
+                <table class="tabela-produtos" id="tabelaProdutos">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Produto</th>
+                            <th>Qtd</th>
+                            <th>Preço Unit.</th>
+                            <th>Subtotal</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaBody">
+                        <tr>
+                            <td colspan="6" style="text-align:center; color:#999; padding:30px;">
+                                Nenhum produto adicionado
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Resumo -->
+        <div class="resumo-section">
+            <div class="section-title">
+                <span>📋</span> Resumo da Venda
+            </div>
+            
+            <div class="info-cliente">
+                <label>👤 Nome do Comprador:</label>
+                <input type="text" id="nomeComprador" value="Cliente Balcão" placeholder="Digite o nome">
+            </div>
+            
+            <div class="info-cliente">
+                <label>💳 Forma de Pagamento:</label>
+                <select id="formaPagamento" onchange="toggleTroco()">
+                    <option value="">Selecione...</option>
+                    <option value="PIX">PIX</option>
+                    <option value="Cartão de Crédito">Cartão de Crédito</option>
+                    <option value="Cartão de Débito">Cartão de Débito</option>
+                    <option value="Dinheiro">Dinheiro</option>
+                    <option value="Transferência Bancária">Transferência Bancária</option>
+                </select>
+            </div>
+            
+            <div class="total-venda">
+                <label>💰 TOTAL DA VENDA</label>
+                <div class="total-valor" id="totalVenda">R$ 0,00</div>
+            </div>
+            
+            <div class="troco-area" id="trocoArea">
+                <label>💵 Valor Recebido (R$):</label>
+                <input type="number" id="valorRecebido" step="0.01" placeholder="0,00" oninput="calcularTroco()">
+                <div class="troco-valor" id="trocoValor">Troco: R$ 0,00</div>
+            </div>
+            
+            <div class="botoes-acao">
+                <button class="btn-salvar" onclick="salvarVenda(false)">
+                    💾 Salvar Venda (F8)
+                </button>
+                <button class="btn-salvar-imprimir" onclick="salvarVenda(true)">
+                    🖨️ Salvar & Imprimir (F9)
+                </button>
+            </div>
+            
+            <div class="atalhos">
+                <span>F8</span> = Salvar venda | 
+                <span>F9</span> = Salvar e Imprimir | 
+                <span>Enter</span> = Adicionar produto
+            </div>
+        </div>
+    </div>
+    
+    <div class="status-bar" id="statusBar">
+        ✅ Pronto para registrar vendas
+    </div>
+</div>
+
+<!-- Modal Histórico -->
+<div class="modal" id="historicoModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>📋 Últimas Vendas - Balcão</h2>
+            <button class="modal-close" onclick="fecharModal()" style="background:rgba(255,255,255,0.2); border:none; color:white; width:30px; height:30px; border-radius:50%; font-size:20px; cursor:pointer;">×</button>
+        </div>
+        <div class="modal-body" id="historicoBody">
+            <div style="text-align:center; padding:20px;">Carregando...</div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading -->
+<div class="loading" id="loading">
+    <div class="spinner"></div>
+    <div class="loading-text">Processando...</div>
+</div>
+
+<!-- Notificação -->
+<div class="notification" id="notification"></div>
+
+<script>
+// ============================================
+// CONFIGURAÇÃO
+// ============================================
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxTrcH440T6koHOcFZqXscxf6NnbnI6sMTGeopuaidvgCMR8x5LYCufjzfj8hUPscUX/exec';
+
+// ============================================
+// VARIÁVEIS GLOBAIS
+// ============================================
+let produtosVenda = [];
+let ultimasVendasCache = [];
+
+// ============================================
+// FUNÇÕES AUXILIARES
+// ============================================
+function mostrarNotificacao(mensagem, tipo = 'success') {
+    const notif = document.getElementById('notification');
+    notif.className = `notification ${tipo}`;
+    notif.innerHTML = mensagem;
+    notif.style.display = 'block';
+    setTimeout(() => {
+        notif.style.display = 'none';
+    }, 3000);
+}
+
+function mostrarLoading(texto = 'Processando...') {
+    const loading = document.getElementById('loading');
+    document.querySelector('.loading-text').textContent = texto;
+    loading.style.display = 'flex';
+}
+
+function esconderLoading() {
+    document.getElementById('loading').style.display = 'none';
+}
+
+function formatarMoeda(valor) {
+    return 'R$ ' + valor.toFixed(2).replace('.', ',');
+}
+
+function atualizarStatusBar(mensagem) {
+    document.getElementById('statusBar').innerHTML = mensagem;
+}
+
+// ============================================
+// FUNÇÕES DO CAIXA
+// ============================================
+function adicionarProduto() {
+    const codigo = document.getElementById('codigoProduto').value.trim();
+    const produto = document.getElementById('nomeProduto').value.trim();
+    const quantidade = parseInt(document.getElementById('quantidade').value) || 1;
+    const preco = parseFloat(document.getElementById('precoUnitario').value);
+    
+    if (!produto) {
+        mostrarNotificacao('❌ Digite o nome do produto', 'error');
+        document.getElementById('nomeProduto').focus();
+        return;
+    }
+    
+    if (isNaN(preco) || preco <= 0) {
+        mostrarNotificacao('❌ Digite um preço válido', 'error');
+        document.getElementById('precoUnitario').focus();
+        return;
+    }
+    
+    if (quantidade <= 0) {
+        mostrarNotificacao('❌ Quantidade inválida', 'error');
+        document.getElementById('quantidade').focus();
+        return;
+    }
+    
+    produtosVenda.push({
+        codigo: codigo || '-',
+        produto: produto,
+        quantidade: quantidade,
+        precoUnitario: preco,
+        subtotal: quantidade * preco
+    });
+    
+    // Limpar campos
+    document.getElementById('codigoProduto').value = '';
+    document.getElementById('nomeProduto').value = '';
+    document.getElementById('quantidade').value = '1';
+    document.getElementById('precoUnitario').value = '';
+    
+    atualizarTabela();
+    atualizarTotal();
+    
+    document.getElementById('nomeProduto').focus();
+    atualizarStatusBar(`✅ Produto "${produto}" adicionado`);
+}
+
+function removerProduto(index) {
+    const produtoRemovido = produtosVenda[index].produto;
+    produtosVenda.splice(index, 1);
+    atualizarTabela();
+    atualizarTotal();
+    atualizarStatusBar(`🗑️ Produto "${produtoRemovido}" removido`);
+}
+
+function atualizarTabela() {
+    const tbody = document.getElementById('tabelaBody');
+    tbody.innerHTML = '';
+    
+    if (produtosVenda.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999; padding:30px;">Nenhum produto adicionado</td></tr>';
+        return;
+    }
+    
+    produtosVenda.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${item.codigo}</td>
+            <td style="max-width:200px; word-break:break-word;">${item.produto}</td>
+            <td>${item.quantidade}</td>
+            <td>${formatarMoeda(item.precoUnitario)}</td>
+            <td style="font-weight:bold; color:#27ae60;">${formatarMoeda(item.subtotal)}</td>
+            <td><button class="btn-remover" onclick="removerProduto(${index})">🗑️</button></td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function atualizarTotal() {
+    const total = produtosVenda.reduce((sum, item) => sum + item.subtotal, 0);
+    document.getElementById('totalVenda').textContent = formatarMoeda(total);
+    calcularTroco();
+}
+
+function toggleTroco() {
+    const pagamento = document.getElementById('formaPagamento').value;
+    const trocoArea = document.getElementById('trocoArea');
+    
+    if (pagamento === 'Dinheiro') {
+        trocoArea.style.display = 'block';
+    } else {
+        trocoArea.style.display = 'none';
+        document.getElementById('valorRecebido').value = '';
+    }
+    calcularTroco();
+}
+
+function calcularTroco() {
+    const total = produtosVenda.reduce((sum, item) => sum + item.subtotal, 0);
+    const recebido = parseFloat(document.getElementById('valorRecebido').value) || 0;
+    const troco = recebido - total;
+    
+    if (troco > 0) {
+        document.getElementById('trocoValor').innerHTML = `Troco: ${formatarMoeda(troco)}`;
+    } else {
+        document.getElementById('trocoValor').innerHTML = 'Troco: R$ 0,00';
+    }
+}
+
+function limparVenda() {
+    if (produtosVenda.length > 0) {
+        if (confirm('⚠️ Tem certeza que deseja limpar todos os itens e começar uma nova venda?')) {
+            produtosVenda = [];
+            document.getElementById('nomeComprador').value = 'Cliente Balcão';
+            document.getElementById('formaPagamento').value = '';
+            document.getElementById('valorRecebido').value = '';
+            document.getElementById('trocoArea').style.display = 'none';
+            atualizarTabela();
+            atualizarTotal();
+            atualizarStatusBar('🔄 Nova venda iniciada');
+            document.getElementById('codigoProduto').focus();
+        }
+    }
+}
+
+// ============================================
+// SALVAR VENDA
+// ============================================
+async function salvarVenda(imprimir = false) {
+    const nomeComprador = document.getElementById('nomeComprador').value.trim();
+    const formaPagamento = document.getElementById('formaPagamento').value;
+    
+    if (!nomeComprador) {
+        mostrarNotificacao('❌ Digite o nome do comprador', 'error');
+        document.getElementById('nomeComprador').focus();
+        return;
+    }
+    
+    if (produtosVenda.length === 0) {
+        mostrarNotificacao('❌ Adicione pelo menos um produto', 'error');
+        document.getElementById('nomeProduto').focus();
+        return;
+    }
+    
+    if (!formaPagamento) {
+        mostrarNotificacao('❌ Selecione a forma de pagamento', 'error');
+        document.getElementById('formaPagamento').focus();
+        return;
+    }
+    
+    mostrarLoading(imprimir ? 'Salvando e gerando comprovante...' : 'Salvando venda...');
+    
+    // Montar descrição dos produtos
+    const produtosDescricao = produtosVenda.map(item => 
+        `${item.quantidade}x ${item.produto}${item.codigo !== '-' ? ` (${item.codigo})` : ''} - ${formatarMoeda(item.subtotal)}`
+    ).join(' | ');
+    
+    const total = produtosVenda.reduce((sum, item) => sum + item.subtotal, 0);
+    const agora = new Date();
+    
+    const vendaData = {
+        timestamp: agora.toLocaleString('pt-BR'),
+        data: agora.toLocaleDateString('pt-BR'),
+        hora: agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+        comprador: nomeComprador,
+        produtos: produtosDescricao,
+        total: total.toFixed(2).replace('.', ','),
+        pagamento: formaPagamento,
+        tipo: 'venda_balcao'
+    };
+    
+    try {
+        const formData = new FormData();
+        formData.append('senha', '562938');
+        formData.append('tipo', 'venda_balcao');
+        formData.append('dados', JSON.stringify(vendaData));
+        
+        await fetch(WEB_APP_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: formData
+        });
+        
+        mostrarNotificacao('✅ Venda registrada com sucesso!', 'success');
+        atualizarStatusBar(`✅ Venda de ${formatarMoeda(total)} registrada para ${nomeComprador}`);
+        
+        if (imprimir) {
+            imprimirCupom(vendaData);
+        }
+        
+        // Limpar para próxima venda
+        produtosVenda = [];
+        document.getElementById('nomeComprador').value = 'Cliente Balcão';
+        document.getElementById('formaPagamento').value = '';
+        document.getElementById('valorRecebido').value = '';
+        document.getElementById('trocoArea').style.display = 'none';
+        atualizarTabela();
+        atualizarTotal();
+        
+    } catch (error) {
+        console.error('Erro ao salvar:', error);
+        mostrarNotificacao('❌ Erro ao registrar venda. Tente novamente.', 'error');
+        atualizarStatusBar('❌ Erro ao salvar venda');
+    }
+    
+    esconderLoading();
+}
+
+// ============================================
+// IMPRESSÃO DO CUPOM
+// ============================================
+function imprimirCupom(vendaData) {
+    const numeroCupom = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    
+    let produtosHTML = '';
+    produtosVenda.forEach(item => {
+        produtosHTML += `
+            <tr>
+                <td style="padding:4px 0;">${item.quantidade}x</td>
+                <td style="padding:4px 0;">${item.produto}${item.codigo !== '-' ? ` (${item.codigo})` : ''}</td>
+                <td style="padding:4px 0; text-align:right;">${formatarMoeda(item.subtotal)}</td>
+            </tr>
+        `;
+    });
+    
+    const htmlCupom = `
+        <div style="width: 80mm; margin: 0 auto; padding: 10px; font-family: 'Courier New', monospace; font-size: 11px;">
+            <div style="text-align: center; border-bottom: 1px dashed #000; padding-bottom: 8px; margin-bottom: 10px;">
+                <div style="font-size: 16px; font-weight: bold;">MUNDO CAROL</div>
+                <div style="font-size: 10px;">CUPOM VENDA BALCÃO</div>
+                <div style="font-size: 9px;">${vendaData.data} ${vendaData.hora}</div>
+                <div style="font-size: 9px;">Cupom: ${numeroCupom}</div>
+            </div>
+            
+            <div style="margin-bottom: 10px;">
+                <div><strong>Cliente:</strong> ${vendaData.comprador}</div>
+                <div><strong>Pagamento:</strong> ${vendaData.pagamento}</div>
+            </div>
+            
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
+                <thead>
+                    <tr style="border-bottom: 1px solid #000;">
+                        <th style="text-align:left;">Qtd</th>
+                        <th style="text-align:left;">Produto</th>
+                        <th style="text-align:right;">Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${produtosHTML}
+                </tbody>
+                <tfoot>
+                    <tr style="border-top: 1px dashed #000;">
+                        <td colspan="2" style="text-align:right; padding-top:5px;"><strong>TOTAL:</strong></td>
+                        <td style="text-align:right; padding-top:5px;"><strong>${formatarMoeda(parseFloat(vendaData.total.replace(',', '.')))}</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+            
+            <div style="text-align: center; font-size: 9px; margin-top: 15px;">
+                <div>********************************</div>
+                <div>Volte Sempre!</div>
+                <div style="font-size: 8px;">www.mundocarol.com.br</div>
+            </div>
+        </div>
+    `;
+    
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'absolute';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = 'none';
+    document.body.appendChild(iframe);
+    
+    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+    iframeDoc.open();
+    iframeDoc.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Cupom Venda Balcão</title>
+            <style>
+                @page { size: 80mm auto; margin: 0; }
+                body { margin: 0; padding: 8px; font-family: 'Courier New', monospace; }
+                @media print { body { margin: 0; padding: 0; } }
+            </style>
+        </head>
+        <body>${htmlCupom}</body>
+        </html>
+    `);
+    iframeDoc.close();
+    
+    iframe.onload = function() {
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+        setTimeout(() => {
+            if (document.body.contains(iframe)) {
+                document.body.removeChild(iframe);
+            }
+        }, 2000);
+    };
+}
+
+// ============================================
+// HISTÓRICO DE VENDAS
+// ============================================
+async function verUltimasVendas() {
+    mostrarLoading('Carregando histórico...');
+    try {
+        const url = `${WEB_APP_URL}?tipo=get_ultimas_vendas_balcao`;
+        const response = await fetch(url);
+        const result = await response.json();
+        
+        const modalBody = document.getElementById('historicoBody');
+        
+        if (result.success && result.vendas && result.vendas.length > 0) {
+            let html = '<div style="max-height: 60vh; overflow-y: auto;">';
+            html += '<table style="width:100%; border-collapse: collapse;">';
+            html += '<thead><tr style="background:#2c3e50; color:white; position:sticky; top:0;">';
+            html += '<th style="padding:10px;">Data/Hora</th><th style="padding:10px;">Cliente</th><th style="padding:10px;">Total</th><th style="padding:10px;">Pagamento</th><th style="padding:10px;"></th></tr></thead><tbody>';
+            
+            result.vendas.forEach((venda, index) => {
+                html += `
+                    <tr style="border-bottom:1px solid #ddd;">
+                        <td style="padding:8px; font-size:11px;">${venda.data || ''} ${venda.hora || ''}</td>
+                        <td style="padding:8px;">${venda.comprador || '-'}</td>
+                        <td style="padding:8px; font-weight:bold; color:#27ae60;">R$ ${venda.total || '0,00'}</td>
+                        <td style="padding:8px;">${venda.pagamento || '-'}</td>
+                        <td style="padding:8px;">
+                            <button class="btn-remover" style="background:#3498db; padding:5px 10px;" onclick="reimprimirVenda(${index})">🖨️</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            html += '</tbody></table></div>';
+            modalBody.innerHTML = html;
+            ultimasVendasCache = result.vendas;
+        } else {
+            modalBody.innerHTML = '<div style="text-align:center; padding:30px;">Nenhuma venda encontrada</div>';
+        }
+        
+        document.getElementById('historicoModal').style.display = 'flex';
+        
+    } catch (error) {
+        console.error('Erro ao carregar vendas:', error);
+        mostrarNotificacao('❌ Erro ao carregar histórico', 'error');
+    }
+    esconderLoading();
+}
+
+function reimprimirVenda(index) {
+    const venda = ultimasVendasCache[index];
+    if (!venda) return;
+    
+    // Parse dos produtos
+    const produtosTexto = venda.produtos || '';
+    const produtosLista = [];
+    const produtosSeparados = produtosTexto.split(' | ');
+    
+    produtosSeparados.forEach(item => {
+        const match = item.match(/(\d+)x\s+(.+?)\s*-\s*R\$\s*([\d.,]+)/);
+        if (match) {
+            const preco = parseFloat(match[3].replace(',', '.'));
+            const qtd = parseInt(match[1]);
+            produtosLista.push({
+                codigo: '-',
+                produto: match[2],
+                quantidade: qtd,
+                precoUnitario: preco / qtd,
+                subtotal: preco
+            });
+        }
+    });
+    
+    const vendaData = {
+        data: venda.data,
+        hora: venda.hora,
+        comprador: venda.comprador,
+        pagamento: venda.pagamento,
+        total: venda.total
+    };
+    
+    // Usar os produtos parseados
+    produtosVenda = produtosLista;
+    imprimirCupom(vendaData);
+    produtosVenda = [];
+    
+    mostrarNotificacao('✅ Reimpressão enviada!', 'success');
+}
+
+function fecharModal() {
+    document.getElementById('historicoModal').style.display = 'none';
+}
+
+// ============================================
+// ATALHOS DE TECLADO
+// ============================================
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'F8') {
+        e.preventDefault();
+        salvarVenda(false);
+    } else if (e.key === 'F9') {
+        e.preventDefault();
+        salvarVenda(true);
+    } else if (e.key === 'Enter') {
+        const activeElement = document.activeElement;
+        if (activeElement.id === 'codigoProduto' || 
+            activeElement.id === 'nomeProduto' || 
+            activeElement.id === 'quantidade' || 
+            activeElement.id === 'precoUnitario') {
+            e.preventDefault();
+            adicionarProduto();
+        }
+    }
+});
+
+// ============================================
+// INICIALIZAÇÃO
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('codigoProduto').focus();
+    atualizarStatusBar('✅ Sistema pronto. Adicione produtos e finalize a venda.');
+});
+
+// Fechar modal ao clicar fora
+document.getElementById('historicoModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        fecharModal();
+    }
+});
+</script>
+</body>
+</html>
